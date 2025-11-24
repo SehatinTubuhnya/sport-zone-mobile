@@ -1,12 +1,14 @@
 # SportZone (Mobile)
 Aplikasi SportZone adalah aplikasi mobile yang mirip dengan website sportzone.id. Ini adalah aplikasi area serba olahraga, cocok untuk forum global. Kesannya adalah modern dan mudah diingat karena merupakan gaya internasional. SportZone.id cocok untuk platform berita & forum dengan target generasi muda.
 
+Planning Sheet: https://docs.google.com/spreadsheets/d/11mEVC2aRkmiB2F0PeraHReVkrHrGKTueJE1h_denQDk/edit
+
 ## Nama & NPM Anggota Kelompok
 - Josh Christmas Rommlynn (2406395291)
 - Theo Samuel (2406496366)
 - Ahmad Yaqdhan (2406399081)
 - Andrew Wanarahardja (2406407373)
-- Ausy Dhafa Adhitama (2406417954)
+
 
 ## Deskripsi aplikasi (nama dan fungsi aplikasi)
 ### Profile
