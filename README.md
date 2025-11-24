@@ -112,3 +112,13 @@ Hak dan Tanggung Jawab:
 
 Batasan Akses:
 - Tidak memiliki izin untuk membuat atau mengelola produk.
+
+## Alur Pengintegrasian dengan Web Service
+1. Buat path atau views pada Django yang mungkin dibutuhkan spesifik ke aplikasi Flutter
+2. Integrasi dilakukan ke aplikasi Flutter dalam urutan sebagai berikut:
+   - Akun (Login, Logout, Register)
+   - Admin
+   - Produk
+   - Article
+3. Dilakukan testing terhadap integrasi
+4. Integrasi selesai!
