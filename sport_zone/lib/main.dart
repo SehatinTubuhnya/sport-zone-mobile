@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:pbp_django_auth/pbp_django_auth.dart';
+import 'package:provider/provider.dart';
+import 'package:sport_zone/screens/login.dart';
 import 'package:sport_zone/screens/home.dart';
 import 'package:sport_zone/screens/product_list.dart';
 import 'package:sport_zone/screens/profile.dart';
@@ -33,7 +36,7 @@ class SportZoneApp extends StatelessWidget {
         ),
         fontFamily: 'Roboto', // Or use GoogleFonts if added
       ),
-      home: const MainScreen(),
+      home: const LoginPage(),
     );
   }
 }
