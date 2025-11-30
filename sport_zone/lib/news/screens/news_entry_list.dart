@@ -42,42 +42,6 @@ class _NewsEntryListPageState extends State<NewsEntryListPage> {
       ),
       drawer: const LeftDrawer(),
       body: FutureBuilder(
-        // future: fetchNews(request),
-        // builder: (context, AsyncSnapshot snapshot) {
-        //   if (snapshot.data == null) {
-        //     return const Center(child: CircularProgressIndicator());
-        //   } else {
-        //     if (!snapshot.hasData) {
-        //       return const Column(
-        //         children: [
-        //           Text(
-        //             'There are no news in football news yet.',
-        //             style: TextStyle(fontSize: 20, color: Color(0xff59A5D8)),
-        //           ),
-        //           SizedBox(height: 8),
-        //         ],
-        //       );
-        //     } else {
-        //       return ListView.builder(
-        //         itemCount: snapshot.data!.length,
-        //         itemBuilder: (_, index) => NewsEntryCard(
-        //           news: snapshot.data![index],
-        //           onTap: () {
-        //             // Navigate to news detail page
-        //             Navigator.push(
-        //               context,
-        //               MaterialPageRoute(
-        //                 builder: (context) => NewsDetailPage(
-        //                   news: snapshot.data![index],
-        //                 ),
-        //               ),
-        //             );
-        //           },
-        //         ),
-        //       );
-        //     }
-        //   }
-        // },
         future: fetchNews(request),
           builder: (context, AsyncSnapshot snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
@@ -85,42 +49,63 @@ class _NewsEntryListPageState extends State<NewsEntryListPage> {
             }
 
             if (snapshot.hasError) {
-              return Center(child: Text("Error: ${snapshot.error}"));
+              return Column(
+                children: [
+                  Image.network(
+                    'https://cdn-icons-png.flaticon.com/512/4063/4063871.png',
+                    fit: BoxFit.cover
+                  ),
+                  Center(
+                    child: Text("Error: ${snapshot.error}")
+                  )
+                ],
+              );
             }
 
             // If data is returned but empty: []
             if (!snapshot.hasData || snapshot.data.isEmpty) {
-              return const Center(
-                child: Text(
-                  "There are no news in football news yet.",
-                  style: TextStyle(fontSize: 20, color: Color(0xff59A5D8)),
-                ),
+              return  Center(
+                child: Column(
+                  children: [
+                    Image.network(
+                      'https://cdn-icons-png.flaticon.com/512/11696/11696730.png',
+                      fit: BoxFit.cover
+                    ),
+                    Text(
+                      "Belum ada berita.",
+                      style: TextStyle(fontSize: 20, color: Color(0xff59A5D8)),
+                    ),
+                  ],
+                )
               );
             }
 
             // Data exists
-            return GridView.builder(
-              itemCount: snapshot.data!.length,
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                crossAxisSpacing: 8,
-                mainAxisSpacing: 8,
-                childAspectRatio: 1.2
+            return Padding(
+              padding: EdgeInsetsGeometry.all(10),
+              child: GridView.builder(
+                itemCount: snapshot.data!.length,
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 8,
+                  mainAxisSpacing: 8,
+                  childAspectRatio: 1.2
+                ),
+                itemBuilder: (_, index) {
+                  return NewsEntryCard(
+                    news: snapshot.data![index], 
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              NewsDetailPage(news: snapshot.data![index]),
+                        ),
+                      );
+                    },
+                  );
+                },
               ),
-              itemBuilder: (_, index) {
-                return NewsEntryCard(
-                  news: snapshot.data![index], 
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            NewsDetailPage(news: snapshot.data![index]),
-                      ),
-                    );
-                  },
-                );
-              },
             );
             // // Data exists
             // return ListView.builder(

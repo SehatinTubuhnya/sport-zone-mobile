@@ -4,7 +4,6 @@ import 'package:sport_zone/news/widgets/comment_form.dart';
 
 class NewsDetailPage extends StatelessWidget {
   final NewsEntry news;
-
   const NewsDetailPage({super.key, required this.news});
 
   String _formatDate(DateTime date) {
