@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sport_zone/news/models/news_entry.dart';
 import 'package:sport_zone/news/models/comment.dart';
-import 'package:sport_zone/news/widgets/comment_form.dart';
+import 'package:sport_zone/news/widgets/comment_entry.dart';
 import 'package:provider/provider.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 
@@ -78,17 +78,7 @@ class _CommentListState extends State<CommentList> {
         return ListView.builder(
           itemCount: snapshot.data!.length,
           itemBuilder: (_, index) => CommentEntry(
-            news: snapshot.data![index],
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) =>
-                    CommentEntry(news: snapshot.data![index]
-                  ),
-                ),
-              );
-            },
+            comment: snapshot.data![index],
           ),
         );
       },

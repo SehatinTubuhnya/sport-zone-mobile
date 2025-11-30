@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:sport_zone/news/screens/menu.dart';
 import 'package:sport_zone/news/screens/newslist_form.dart';
 import 'package:sport_zone/news/screens/news_entry_list.dart';
-import 'package:pbp_django_auth/pbp_django_auth.dart';
-import 'package:provider/provider.dart';
 
 class ItemCard extends StatelessWidget {
   // Menampilkan kartu dengan ikon dan nama.
@@ -14,7 +12,6 @@ class ItemCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final request = context.watch<CookieRequest>();
     return Material(
       // Menentukan warna latar belakang dari tema aplikasi.
       color: Theme.of(context).colorScheme.secondary,
