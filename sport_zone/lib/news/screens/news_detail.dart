@@ -54,7 +54,7 @@ class NewsDetailPage extends StatelessWidget {
                           horizontal: 12.0, vertical: 6.0),
                       margin: const EdgeInsets.only(bottom: 12.0),
                       decoration: BoxDecoration(
-                        color: Colors.amber,
+                        color: Colors.black,
                         borderRadius: BorderRadius.circular(20.0),
                       ),
                       child: const Text(
@@ -91,7 +91,7 @@ class NewsDetailPage extends StatelessWidget {
                           style: TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.bold,
-                            color: Colors.indigo.shade700,
+                            color: Colors.black,
                           ),
                         ),
                       ),
@@ -143,7 +143,7 @@ class NewsDetailPage extends StatelessWidget {
                         children: [
                           Expanded(child: Container(
                             padding: EdgeInsets.all(20),
-                            color: Colors.amber,
+                            color: Colors.black,
                             height: 100,
                             width: 50,
                           ),

@@ -1,4 +1,3 @@
-import 'package:sport_zone/news/widgets/news_card.dart';
 import 'package:flutter/material.dart';
 import 'package:sport_zone/news/screens/menu.dart';
 import 'package:sport_zone/news/screens/newslist_form.dart';
@@ -14,7 +13,7 @@ class LeftDrawer extends StatelessWidget {
         children: [
           const DrawerHeader(
             decoration: BoxDecoration(
-              color: Colors.blue,
+              color: Colors.black,
             ),
             child: Column(
               children: [

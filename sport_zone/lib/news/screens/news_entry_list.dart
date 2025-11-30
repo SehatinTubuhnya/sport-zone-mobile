@@ -20,7 +20,6 @@ class _NewsEntryListPageState extends State<NewsEntryListPage> {
     // If you using chrome,  use URL http://localhost:8000
     
     final response = await request.get('http://localhost:8000/articles/json/');
-    print(response[0]);
     // Decode response to json format
     var data = response;
     
@@ -100,21 +99,45 @@ class _NewsEntryListPageState extends State<NewsEntryListPage> {
             }
 
             // Data exists
-            return ListView.builder(
+            return GridView.builder(
               itemCount: snapshot.data!.length,
-              itemBuilder: (_, index) => NewsEntryCard(
-                news: snapshot.data![index],
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) =>
-                          NewsDetailPage(news: snapshot.data![index]),
-                    ),
-                  );
-                },
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                crossAxisSpacing: 8,
+                mainAxisSpacing: 8,
+                childAspectRatio: 1.2
               ),
+              itemBuilder: (_, index) {
+                return NewsEntryCard(
+                  news: snapshot.data![index], 
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            NewsDetailPage(news: snapshot.data![index]),
+                      ),
+                    );
+                  },
+                );
+              },
             );
+            // // Data exists
+            // return ListView.builder(
+            //   itemCount: snapshot.data!.length,
+            //   itemBuilder: (_, index) => NewsEntryCard(
+            //     news: snapshot.data![index],
+            //     onTap: () {
+            //       Navigator.push(
+            //         context,
+            //         MaterialPageRoute(
+            //           builder: (context) =>
+            //               NewsDetailPage(news: snapshot.data![index]),
+            //         ),
+            //       );
+            //     },
+            //   ),
+            // );
           },
       ),
     );
