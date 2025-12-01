@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sport_zone/news/models/news_entry.dart';
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:intl/intl.dart';
 
 class NewsEntryCard extends StatelessWidget {
   final NewsEntry news;
@@ -11,6 +12,11 @@ class NewsEntryCard extends StatelessWidget {
     required this.news,
     required this.onTap,
   });
+
+  String getDate(DateTime date) {
+    DateFormat formatter = DateFormat('dd MMM yyyy');
+    return formatter.format(date);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +33,7 @@ class NewsEntryCard extends StatelessWidget {
           children: [
             // --- IMAGE --- stays fixed
             AspectRatio(
-              aspectRatio: 2.7,
+              aspectRatio: 1.2,
               child: ClipRRect(
                 borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(8),
@@ -43,7 +49,7 @@ class NewsEntryCard extends StatelessWidget {
             ),
 
             Padding(
-              padding: EdgeInsetsGeometry.only(left: 10, right: 10, top: 6), 
+              padding: EdgeInsetsGeometry.only(left: 10, right: 10, top: 6, bottom: 6), 
               child: AutoSizeText(
                 news.fields.title,
                 maxLines: 2,
@@ -55,38 +61,56 @@ class NewsEntryCard extends StatelessWidget {
 
             // --- TEXT --- scrollable
             Expanded(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.only(left: 10, right: 10, bottom: 10),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    AutoSizeText(
-                      news.fields.category,
-                      maxLines: 1,
-                      minFontSize: 8,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(color: Colors.grey[700]),
-                    ),
-                    const SizedBox(height: 6),
-                    AutoSizeText(
-                      news.fields.content,
-                      maxLines: 10, // will scroll if content is long
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(color: Colors.black),
-                    ),
-                    const SizedBox(height: 6),
-                    if (news.fields.isFeatured)
-                      const AutoSizeText(
-                        'FEATURED',
+              child: Padding(
+                padding: EdgeInsetsGeometry.only( left: 10, right: 10, bottom: 6),
+                child: 
+                // SingleChildScrollView(
+                  // padding: const EdgeInsets.only(left: 10, right: 10, bottom: 10),
+                  // child: 
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        news.fields.category,
                         maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                         style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.amber,
+                          color: Colors.grey[700],
+                          fontSize: 10
                         ),
                       ),
-                  ],
-                ),
-              ),
+                      // const SizedBox(height: 2),
+                      // AutoSizeText(
+                      //   news.fields.content,
+                      //   maxLines: 10, // will scroll if content is long
+                      //   overflow: TextOverflow.ellipsis,
+                      //   style: const TextStyle(color: Colors.black),
+                      // ),
+
+                      Text(
+                        getDate(news.fields.createdAt),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          color: Colors.grey[700],
+                          fontSize: 10
+                        ),
+                      ),
+                      const SizedBox(height: 6),
+                      if (news.fields.isFeatured)
+                        const Text(
+                          'FEATURED',
+                          maxLines: 1,
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 10,
+                            color: Colors.amber,
+                          ),
+                        ),
+                    ],
+                  ),
+                // ),
+              )
             ),
           ],
         ),

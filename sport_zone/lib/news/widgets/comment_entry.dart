@@ -12,22 +12,23 @@ class CommentEntry extends StatelessWidget {
   String timeAgo(DateTime date) {
     final Duration diff = DateTime.now().difference(date);
 
-    if (diff.inSeconds < 60) return "just now";
-    if (diff.inMinutes < 60) return "${diff.inMinutes}m ago";
-    if (diff.inHours < 24) return "${diff.inHours}h ago";
-    if (diff.inDays < 7) return "${diff.inDays}d ago";
+    if (diff.inSeconds < 60) return "Baru saja";
+    if (diff.inMinutes < 60) return "${diff.inMinutes} menit yang lalu";
+    if (diff.inHours < 24) return "${diff.inHours} jam yang lalu";
+    if (diff.inDays < 2) return "Kemarin";
+    if (diff.inDays < 7) return "${diff.inDays} hari yang lalu";
 
     // Weeks
     final weeks = (diff.inDays / 7).floor();
-    if (weeks < 4) return "${weeks}w ago";
+    if (weeks < 4) return "${weeks}  minggu yang lalu";
 
     // Months (approx)
     final months = (diff.inDays / 30).floor();
-    if (months < 12) return "${months}mo ago";
+    if (months < 12) return "${months} bulan yang lalu";
 
     // Years
     final years = (diff.inDays / 365).floor();
-    return "${years}y ago";
+    return "${years} tahun yang lalu";
   }
 
 
@@ -56,7 +57,7 @@ class CommentEntry extends StatelessWidget {
                 children: [
                   Row(
                     children: [
-                      Text(comment.fields.username),
+                      Text('@${comment.fields.username}'),
                       const SizedBox(width: 8),
                       Text("●"),
                       const SizedBox(width: 8),

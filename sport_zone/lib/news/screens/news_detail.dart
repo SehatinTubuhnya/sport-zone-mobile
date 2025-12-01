@@ -134,27 +134,26 @@ class NewsDetailPage extends StatelessWidget {
                   ),
                   const SizedBox(height: 24),
 
-                  Container(
-                    padding: EdgeInsets.all(20),
-                    color: Colors.blue,
-                    child: 
-                      Row(
-                        children: [
-                          Expanded(child: Container(
-                            padding: EdgeInsets.all(20),
-                            color: Colors.black,
-                            height: 100,
-                            width: 50,
-                          ),
-                          )
-                          ,
-                          Expanded(
-                            child: CommentForm()
-                          )
-                          
-                          
-                        ],
-                      )
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 16.0),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+
+                        // --- Profile picture ---
+                        const CircleAvatar(
+                          radius: 22,
+                          backgroundImage:NetworkImage('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ4YreOWfDX3kK-QLAbAL4ufCPc84ol2MA8Xg&s')
+                        ),
+
+                        const SizedBox(width: 12),
+
+                        // --- Comment Input ---
+                        Expanded(
+                          child: CommentForm(newsId: news.pk),
+                        ),
+                      ],
+                    ),
                   )
                 ],
               ),

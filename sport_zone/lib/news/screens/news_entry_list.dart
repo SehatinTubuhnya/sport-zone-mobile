@@ -50,6 +50,7 @@ class _NewsEntryListPageState extends State<NewsEntryListPage> {
 
             if (snapshot.hasError) {
               return Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Image.network(
                     'https://cdn-icons-png.flaticon.com/512/4063/4063871.png',
@@ -89,7 +90,7 @@ class _NewsEntryListPageState extends State<NewsEntryListPage> {
                   crossAxisCount: 2,
                   crossAxisSpacing: 8,
                   mainAxisSpacing: 8,
-                  childAspectRatio: 1.2
+                  childAspectRatio: 0.6
                 ),
                 itemBuilder: (_, index) {
                   return NewsEntryCard(
