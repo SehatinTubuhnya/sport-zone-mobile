@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:sport_zone/screens/register.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
+import 'package:sport_zone/screens/home.dart';
 
 void main() {
   runApp(const LoginApp());
@@ -124,7 +125,7 @@ class _LoginPageState extends State<LoginPage> {
                             context,
                             MaterialPageRoute(
                               builder: (context) =>
-                                  LoginPage(), // TODO: Mengedit LoginPage ke MyHomePage ketika sudah mengimplentasikan MyHomePage-nya
+                                  HomeScreen()
                             ),
                           );
                           ScaffoldMessenger.of(context)
