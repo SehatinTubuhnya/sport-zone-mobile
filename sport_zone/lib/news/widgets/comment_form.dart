@@ -47,6 +47,12 @@ class _CommentFormState extends State<CommentForm> {
                 ),
               )
             );
+
+            setState(() {
+              isFocused = false;
+              _controller.clear();
+              _content = "";
+            });
           }
         }
     }
@@ -84,28 +90,30 @@ class _CommentFormState extends State<CommentForm> {
                     ),
 
                     if (isFocused) 
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          TextButton(
-                            onPressed: () {
-                              setState(() {
-                                isFocused = false;
-                                _controller.clear();
-                                _content = "";
-                              });
-                            }, 
-                            child: const Text("Cancel"),
-                          ),
-                          TextButton(
-                            onPressed: _content.trim().isEmpty 
-                              ? null 
-                              : () => _submitComment(request),
-                            child: const Text("Comment"),
-                          ),
-                        ],
-                      ),
-                    
+                      Padding(
+                        padding: EdgeInsetsGeometry.only(bottom: 6, right: 6),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            TextButton(
+                              onPressed: () {
+                                setState(() {
+                                  isFocused = false;
+                                  _controller.clear();
+                                  _content = "";
+                                });
+                              }, 
+                              child: const Text("Cancel"),
+                            ),
+                            TextButton(
+                              onPressed: _content.trim().isEmpty 
+                                ? null 
+                                : () => _submitComment(request),
+                              child: const Text("Comment"),
+                            ),
+                          ],
+                        ),
+                      )
                   ],
                 )
               ),

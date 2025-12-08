@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sport_zone/news/models/news_entry.dart';
 import 'package:sport_zone/news/widgets/comment_form.dart';
+import 'package:sport_zone/news/widgets/comment_list.dart';
 
 class NewsDetailPage extends StatelessWidget {
   final NewsEntry news;
@@ -21,6 +22,8 @@ class NewsDetailPage extends StatelessWidget {
         backgroundColor: Colors.indigo,
         foregroundColor: Colors.white,
       ),
+
+      
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -53,7 +56,7 @@ class NewsDetailPage extends StatelessWidget {
                           horizontal: 12.0, vertical: 6.0),
                       margin: const EdgeInsets.only(bottom: 12.0),
                       decoration: BoxDecoration(
-                        color: Colors.black,
+                        color: Colors.blue,
                         borderRadius: BorderRadius.circular(20.0),
                       ),
                       child: const Text(
@@ -152,6 +155,8 @@ class NewsDetailPage extends StatelessWidget {
                         Expanded(
                           child: CommentForm(newsId: news.pk),
                         ),
+
+                        CommentList(news: news),
                       ],
                     ),
                   )

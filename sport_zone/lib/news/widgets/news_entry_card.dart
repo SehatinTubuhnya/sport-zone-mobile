@@ -28,24 +28,51 @@ class NewsEntryCard extends StatelessWidget {
           side: BorderSide(color: Colors.grey.shade300),
         ),
         elevation: 2,
+        color: Colors.white,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // --- IMAGE --- stays fixed
-            AspectRatio(
-              aspectRatio: 1.2,
-              child: ClipRRect(
-                borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(8),
-                  topRight: Radius.circular(8),
+            Stack(
+              children: [
+                AspectRatio(
+                  aspectRatio: 1.2,
+                  child: ClipRRect(
+                    borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(8),
+                      topRight: Radius.circular(8),
+                    ),
+                    child: Image.network(
+                      'http://localhost:8000/articles/proxy-image/?url=${Uri.encodeComponent(news.fields.thumbnail)}',
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) =>
+                          Container(color: Colors.grey[300]),
+                    ),
+                  ),
                 ),
-                child: Image.network(
-                  'http://localhost:8000/articles/proxy-image/?url=${Uri.encodeComponent(news.fields.thumbnail)}',
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) =>
-                      Container(color: Colors.grey[300]),
-                ),
-              ),
+
+                if (news.fields.isFeatured)
+                  Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8, vertical: 4
+                      ),
+                      margin: const EdgeInsets.only(top: 6, left: 6),
+                      decoration: BoxDecoration(
+                        color: Colors.black,
+                        borderRadius: BorderRadius.circular(20.0),
+                      ),
+                      child: const Text(
+                        'FEATURED',
+                        maxLines: 1,
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 6,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                        
+              ]
             ),
 
             Padding(
@@ -79,13 +106,6 @@ class NewsEntryCard extends StatelessWidget {
                           fontSize: 10
                         ),
                       ),
-                      // const SizedBox(height: 2),
-                      // AutoSizeText(
-                      //   news.fields.content,
-                      //   maxLines: 10, // will scroll if content is long
-                      //   overflow: TextOverflow.ellipsis,
-                      //   style: const TextStyle(color: Colors.black),
-                      // ),
 
                       Text(
                         getDate(news.fields.createdAt),
@@ -96,17 +116,8 @@ class NewsEntryCard extends StatelessWidget {
                           fontSize: 10
                         ),
                       ),
-                      const SizedBox(height: 6),
-                      if (news.fields.isFeatured)
-                        const Text(
-                          'FEATURED',
-                          maxLines: 1,
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 10,
-                            color: Colors.amber,
-                          ),
-                        ),
+                      // const SizedBox(height: 6),
+                      
                     ],
                   ),
                 // ),
