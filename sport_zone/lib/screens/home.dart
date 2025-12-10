@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:sport_zone/news/screens/news_entry_list.dart'; // Add intl package in pubspec.yaml for currency formatting
+import 'package:sport_zone/screens/product_list.dart';
+import 'package:sport_zone/screens/profile.dart';
 
 class SportZoneApp extends StatelessWidget {
   const SportZoneApp({super.key});
@@ -26,6 +28,7 @@ class SportZoneApp extends StatelessWidget {
           elevation: 0,
           surfaceTintColor: Colors.transparent,
         ),
+        popupMenuTheme: PopupMenuThemeData(color: Colors.white),
         fontFamily: 'Roboto', // Or use GoogleFonts if added
       ),
       home: const MainScreen(),
@@ -46,8 +49,8 @@ class _MainScreenState extends State<MainScreen> {
   final List<Widget> _pages = [
     const HomeScreen(),
     const NewsEntryListPage(),
-    const Center(child: Text('Halaman Produk')),
-    const Center(child: Text('Halaman Profil')),
+    const ProductList(),
+    const Profile(),
   ];
 
   @override

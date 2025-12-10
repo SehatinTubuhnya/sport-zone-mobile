@@ -1,21 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:sport_zone/news/models/news_entry.dart';
 import 'package:sport_zone/news/screens/news_detail.dart';
+import 'package:sport_zone/news/screens/newslist_form.dart';
 import 'package:sport_zone/news/widgets/news_entry_card.dart';
 import 'package:provider/provider.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:sport_zone/news/widgets/addNews.dart';
 
 class NewsEntryListPage extends StatefulWidget {
-  const NewsEntryListPage({super.key});
+  final bool isAdmin;
+  final bool isWriter;
+  const NewsEntryListPage({super.key, this.isAdmin = false, this.isWriter = false});
 
   @override
   State<NewsEntryListPage> createState() => _NewsEntryListPageState();
 }
 
 class _NewsEntryListPageState extends State<NewsEntryListPage> {
-  
-  // final List<String> _filterList = ['Transfer', 'Match', 'Exclusive', 'Rumor', 'Analysis', 'Update'];
+  bool _tileExpanded = false;
+  String filter = "All";
+  final List<String> _filterList = ['All','Transfer', 'Match', 'Update', 'Exclusive', 'Rumor', 'Analysis'];
   // String? _filter = 'Update';
 
   Future<List<NewsEntry>> fetchNews(CookieRequest request) async {
@@ -30,8 +34,13 @@ class _NewsEntryListPageState extends State<NewsEntryListPage> {
     // Convert json data to NewsEntry objects
     List<NewsEntry> listNews = [];
     for (var d in data) {
+      NewsEntry news = NewsEntry.fromJson(d);
       if (d != null) {
-        listNews.add(NewsEntry.fromJson(d));
+        if (filter == "All") {
+          listNews.add(news);
+        } else if (filter != "All" && news.fields.category == filter) {
+          listNews.add(news);
+        }
       }
     }
     return listNews;
@@ -54,6 +63,45 @@ class _NewsEntryListPageState extends State<NewsEntryListPage> {
           appBar: AppBar(
             // title: const Text('News Entry List'),
             actions: [
+              Padding(
+                padding: EdgeInsets.only(right : 10),
+                child: PopupMenuButton<String>(
+                  padding: EdgeInsets.all(10),
+                  tooltip: "Filter",
+                  icon: Row(
+                    children: [
+                      Text(
+                        "Filter",
+                        style: TextStyle(color: Colors.black),
+                      ),
+                      const SizedBox(width: 4),
+                      const Icon(Icons.arrow_drop_down, color: Colors.black),
+                    ],
+                  ),
+                  onSelected: (String value) {
+                    setState(() {
+                      filter = value;   // update filter value
+                    });
+                  },
+                  itemBuilder: (context) {
+                    return _filterList.map((option) {
+                      return PopupMenuItem(
+                        value: option,
+                        child: Container(
+                          padding: EdgeInsets.all(10),
+                          child: Text(
+                            option,
+                            style: TextStyle(
+                              color: Colors.black
+                            ),
+                          )
+                        ),
+                      );
+                    }).toList();
+                  },
+                ),
+              ),
+
               // DropdownMenu<String>(
               //   initialSelection: _filter,
               //   onSelected: (String? value) {
@@ -217,10 +265,24 @@ class _NewsEntryListPageState extends State<NewsEntryListPage> {
           ),
         ),
 
+        // if (widget.isAdmin == true || widget.isWriter == true)
         Positioned(
           bottom: 10,
           right: 10,
-          child: AddNews()
+          child: ElevatedButton(
+            onPressed: ()  {
+              Navigator.push(
+                context, 
+                MaterialPageRoute(builder: (context) => NewsFormPage()));
+            }, 
+            style: ElevatedButton.styleFrom(
+                shape: const CircleBorder(), // Makes the button circular
+                padding: const EdgeInsets.all(10), // Adjust padding as needed
+                backgroundColor: Colors.black, // Button background color
+                foregroundColor: Colors.white, // Icon/text color
+              ),
+            child: const Icon(Icons.add_circle), // The icon insid
+          ),
         )        
       ]
     );

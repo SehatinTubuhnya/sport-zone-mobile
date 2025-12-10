@@ -130,7 +130,7 @@ class NewsDetailPage extends StatelessWidget {
                   Text(
                     news.fields.content,
                     style: const TextStyle(
-                      fontSize: 16.0,
+                      fontSize: 12.0,
                       height: 1.6,
                     ),
                     textAlign: TextAlign.justify,
@@ -155,9 +155,16 @@ class NewsDetailPage extends StatelessWidget {
                         Expanded(
                           child: CommentForm(newsId: news.pk),
                         ),
-
-                        CommentList(news: news),
                       ],
+                    ),
+                  ),
+
+                  Padding(
+                    padding: EdgeInsets.all(8),
+                    child: Expanded (
+                      child: CommentList(
+                        news: news
+                      ),
                     ),
                   )
                 ],

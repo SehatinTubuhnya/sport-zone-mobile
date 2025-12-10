@@ -30,6 +30,7 @@ class _CommentListState extends State<CommentList> {
         listComments.add(Comment.fromJson(d));
       }
     }
+    print("Comment : " + listComments[0].fields.content);
     return listComments;
   }
 
@@ -75,10 +76,14 @@ class _CommentListState extends State<CommentList> {
           );
         }
 
-        return ListView.builder(
-          itemCount: snapshot.data!.length,
-          itemBuilder: (_, index) => CommentEntry(
-            comment: snapshot.data![index],
+        return Container(
+          height: 250,
+          width: double.infinity,
+          child: ListView.builder(
+            itemCount: snapshot.data!.length,
+            itemBuilder: (_, index) => CommentEntry(
+              comment: snapshot.data![index],
+            ),
           ),
         );
       },

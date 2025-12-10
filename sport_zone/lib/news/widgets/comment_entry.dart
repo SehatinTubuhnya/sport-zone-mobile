@@ -36,44 +36,55 @@ class CommentEntry extends StatelessWidget {
   Widget build(BuildContext context) {
     // TODO: implement build
     return Padding (
-      padding: EdgeInsetsGeometry.all(10),
+      padding: EdgeInsets.only(bottom: 10),
       child: Container(
-        height: 120,
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            CircleAvatar(
-              radius: 20,
-              backgroundImage: NetworkImage(
-                comment.fields.profilePic,
+        color: Colors.white,
+        child: Padding(
+          padding: EdgeInsets.all(10),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              CircleAvatar(
+                radius: 20,
+                backgroundImage: NetworkImage(
+                  comment.fields.profilePic,
+                ),
               ),
-            ),
 
-            const SizedBox(width: 8),
+              const SizedBox(width: 8),
 
-            Expanded(
-              child: Column (
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Text('@${comment.fields.username}'),
-                      const SizedBox(width: 8),
-                      Text("●"),
-                      const SizedBox(width: 8),
-                      Text(timeAgo(comment.fields.createdAt))
-                    ],
-                  ),
+              Expanded(
+                child: Column (
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Text(
+                          '@${comment.fields.username}',
+                          style: TextStyle(fontSize: 10),
+                        ),
+                        Text(
+                          " | ",
+                          style: TextStyle(fontSize: 10),
+                        ),
+                        Text(
+                          timeAgo(comment.fields.createdAt),
+                          style: TextStyle(fontSize: 10),
+                        )
+                      ],
+                    ),
 
-                  const SizedBox(height: 8),
+                    const SizedBox(height: 8),
 
-                  Text(
-                    comment.fields.content
-                  )
-                ],
-              ),
-            )
-          ],
+                    Text(
+                      comment.fields.content,
+                      softWrap: true,
+                    )
+                  ],
+                ),
+              )
+            ],
+          ),
         )
       )
     );
