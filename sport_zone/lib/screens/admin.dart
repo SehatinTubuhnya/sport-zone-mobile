@@ -139,8 +139,8 @@ class AccountsTab extends StatelessWidget {
   Widget build(BuildContext context) {
     // Dummy Data
     final List<Map<String, dynamic>> users = [
-      {'username': 'josh_christmas', 'role': ['Admin', 'Author'], 'pic': 'https://placehold.co/100/black/white?text=JC'},
-      {'username': 'seller_official', 'role': ['Seller'], 'pic': 'https://placehold.co/100/blue/white?text=SO'},
+      {'username': 'josh_christmas', 'role': ['Admin', 'Author'], 'pic': 'https://placehold.co/100/black/white.png?text=JC'},
+      {'username': 'seller_official', 'role': ['Seller'], 'pic': 'https://placehold.co/100/blue/white.png?text=SO'},
       {'username': 'guest_user_99', 'role': [], 'pic': null}, // No Pic
     ];
 
