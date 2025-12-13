@@ -5,22 +5,18 @@ import 'package:sport_zone/news/screens/newslist_form.dart';
 import 'package:sport_zone/news/widgets/news_entry_card.dart';
 import 'package:provider/provider.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
-import 'package:sport_zone/news/widgets/addNews.dart';
 
 class NewsEntryListPage extends StatefulWidget {
-  final bool isAdmin;
-  final bool isWriter;
-  const NewsEntryListPage({super.key, this.isAdmin = false, this.isWriter = false});
+  final bool isAdminOrAuthor;
+  const NewsEntryListPage({super.key, this.isAdminOrAuthor = false});
 
   @override
   State<NewsEntryListPage> createState() => _NewsEntryListPageState();
 }
 
 class _NewsEntryListPageState extends State<NewsEntryListPage> {
-  bool _tileExpanded = false;
   String filter = "All";
-  final List<String> _filterList = ['All','Transfer', 'Match', 'Update', 'Exclusive', 'Rumor', 'Analysis'];
-  // String? _filter = 'Update';
+  final List<String> _filterList = ['All','Transfer', 'Update', 'Exclusive',  'Match', 'Rumor', 'Analysis'];
 
   Future<List<NewsEntry>> fetchNews(CookieRequest request) async {
     // TODO: Replace the URL with your app's URL and don't forget to add a trailing slash (/)!
@@ -46,14 +42,6 @@ class _NewsEntryListPageState extends State<NewsEntryListPage> {
     return listNews;
   }
 
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   if (!_filterList.contains(_filter)) {
-  //     _filter = _filterList.first;
-  //   }
-  // }
-
   @override
   Widget build(BuildContext context) {
     final request = context.watch<CookieRequest>();
@@ -61,7 +49,7 @@ class _NewsEntryListPageState extends State<NewsEntryListPage> {
       children: [
         Scaffold(
           appBar: AppBar(
-            // title: const Text('News Entry List'),
+            title: const Text('Berita'),
             actions: [
               Padding(
                 padding: EdgeInsets.only(right : 10),
@@ -101,83 +89,9 @@ class _NewsEntryListPageState extends State<NewsEntryListPage> {
                   },
                 ),
               ),
-
-              // DropdownMenu<String>(
-              //   initialSelection: _filter,
-              //   onSelected: (String? value) {
-              //     setState(() {
-              //       _filter = value;
-              //     });
-              //   },
-              //   dropdownMenuEntries: _filterList.map(
-              //     (e) => DropdownMenuEntry<String>(
-              //       value: e,
-              //       label: e,
-              //     ),
-              //   ).toList(),
-              // ),
-
-              // DropdownButton<String>(
-              //   value: _filter,
-              //   hint: Text('Filter'),
-              //   icon: Icon(Icons.arrow_drop_down),
-              //   underline: SizedBox(),
-
-              //   onChanged: (String? newValue) {
-              //     setState(() {
-              //       _filter = newValue;
-              //     });
-              //   },
-
-              //   items: _filterList
-              //       .map((String value) => DropdownMenuItem<String>(
-              //             value: value,
-              //             child: Text(value),
-              //           ))
-              //       .toList(),
-              // )
-
-              
-              // DropdownButton<String>(
-              //   value: _filter,
-              //   hint: Text('Filter'),
-              //   icon: Icon(Icons.arrow_drop_down),
-              //   underline: SizedBox(),
-              //   onChanged: (String? newValue) {
-              //     setState(() {
-              //       _filter = newValue;
-              //     });
-              //   },
-              //   items: _filterList.map((String value) {
-              //     return DropdownMenuItem<String>(
-              //       value: value,
-              //       child: Text(value),
-              //     );
-              //   }).toList(),
-              // )
-
-              // DropdownButton<String>(
-              //   value: _filterList.contains(_filter) ? _filter : null,,
-              //   hint: Text('Filter'),
-              //   icon: Icon(Icons.arrow_drop_down),
-              //   underline: SizedBox(),
-
-              //   onChanged: (String? newValue) {
-              //     setState(() {
-              //       _filter = newValue ?? _filterList.first;
-              //     });
-              //   },
-
-              //   items: _filterList.map<DropdownMenuItem<String>> ((String value) {
-              //     return DropdownMenuItem<String>(
-              //       value: value,
-              //       child: Text(value));
-              //   }).toList(),
-              // ) 
             ]
           ),
           
-          // drawer: const LeftDrawer(),
           body: FutureBuilder(
             future: fetchNews(request),
               builder: (context, AsyncSnapshot snapshot) {
@@ -245,22 +159,6 @@ class _NewsEntryListPageState extends State<NewsEntryListPage> {
                     },
                   ),
                 );
-                // // Data exists
-                // return ListView.builder(
-                //   itemCount: snapshot.data!.length,
-                //   itemBuilder: (_, index) => NewsEntryCard(
-                //     news: snapshot.data![index],
-                //     onTap: () {
-                //       Navigator.push(
-                //         context,
-                //         MaterialPageRoute(
-                //           builder: (context) =>
-                //               NewsDetailPage(news: snapshot.data![index]),
-                //         ),
-                //       );
-                //     },
-                //   ),
-                // );
               },
           ),
         ),
@@ -280,7 +178,7 @@ class _NewsEntryListPageState extends State<NewsEntryListPage> {
                 padding: const EdgeInsets.all(10), // Adjust padding as needed
                 backgroundColor: Colors.black, // Button background color
                 foregroundColor: Colors.white, // Icon/text color
-              ),
+            ),
             child: const Icon(Icons.add_circle), // The icon insid
           ),
         )        

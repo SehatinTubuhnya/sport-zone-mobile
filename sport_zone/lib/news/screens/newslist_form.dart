@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:sport_zone/news/widgets/left_drawer.dart';
+import 'package:sport_zone/news/screens/news_entry_list.dart';
 
 import 'dart:convert';
 import 'package:provider/provider.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
-import 'package:sport_zone/news/screens/menu.dart';
 
 class NewsFormPage extends StatefulWidget {
     const NewsFormPage({super.key});
@@ -17,17 +16,17 @@ class _NewsFormPageState extends State<NewsFormPage> {
     final _formKey = GlobalKey<FormState>();
     String _title = "";
     String _content = "";
-    String _category = "update"; // default
+    String _category = "Update"; // default
     String _thumbnail = "";
     bool _isFeatured = false; // default
 
     final List<String> _categories = [
-      'transfer',
-      'update',
-      'exclusive',
-      'match',
-      'rumor',
-      'analysis',
+      'Transfer',
+      'Update',
+      'Exclusive',
+      'Match',
+      'Rumor',
+      'Analysis',
     ];
 
     @override
@@ -35,15 +34,12 @@ class _NewsFormPageState extends State<NewsFormPage> {
         final request = context.watch<CookieRequest>();
         return Scaffold(
           appBar: AppBar(
-            title: const Center(
-              child: Text(
-                'Form Tambah Berita',
+            title: Text(
+                'Tambah Berita',
               ),
-            ),
-            backgroundColor: Colors.indigo,
-            foregroundColor: Colors.white,
+            backgroundColor: Colors.white,
+            foregroundColor: Colors.black,
           ),
-          drawer: const LeftDrawer(),
           body: Form(
             key: _formKey,
             child: SingleChildScrollView(
@@ -150,7 +146,7 @@ class _NewsFormPageState extends State<NewsFormPage> {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: SwitchListTile(
-                      title: const Text("Tandai sebagai Berita Unggulan"),
+                      title: const Text("Berita Unggulan"),
                       value: _isFeatured,
                       onChanged: (bool value) {
                         setState(() {
@@ -177,19 +173,6 @@ class _NewsFormPageState extends State<NewsFormPage> {
                               builder: (context) {
                                 return AlertDialog(
                                   title: const Text('Berita berhasil disimpan!'),
-                                  content: SingleChildScrollView(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text('Judul: $_title'),
-                                        Text('Isi: $_content'),
-                                        Text('Kategori: $_category'),
-                                        Text('Thumbnail: $_thumbnail'),
-                                        Text('Unggulan: ${_isFeatured ? "Ya" : "Tidak"}'),
-                                      ],
-                                    ),
-                                  ),
                                   actions: [
                                     TextButton(
                                       child: const Text('OK'),
@@ -218,7 +201,8 @@ class _NewsFormPageState extends State<NewsFormPage> {
                                               Navigator.pushReplacement(
                                                 context,
                                                 MaterialPageRoute(
-                                                    builder: (context) => MyHomePage()),
+                                                  builder: (context) => NewsEntryListPage(isAdminOrAuthor: true)
+                                                ),
                                               );
                                             } else {
                                               ScaffoldMessenger.of(context)

@@ -2,10 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:sport_zone/news/models/news_entry.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:intl/intl.dart';
+import 'package:sport_zone/news/screens/newslist_edit.dart';
+// import 'package:sport_zone/news/widgets/confirm_delete.dart';
+import 'package:sport_zone/news/screens/news_entry_list.dart';
+import 'package:provider/provider.dart';
+import 'package:pbp_django_auth/pbp_django_auth.dart';
+import 'dart:convert';
 
 class NewsEntryCard extends StatelessWidget {
   final NewsEntry news;
   final VoidCallback onTap;
+
+
 
   const NewsEntryCard({
     super.key,
@@ -20,6 +28,7 @@ class NewsEntryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final request = context.watch<CookieRequest>();
     return InkWell(
       onTap: onTap,
       child: Card(
@@ -89,7 +98,7 @@ class NewsEntryCard extends StatelessWidget {
             // --- TEXT --- scrollable
             Expanded(
               child: Padding(
-                padding: EdgeInsetsGeometry.only( left: 10, right: 10, bottom: 6),
+                padding: EdgeInsetsGeometry.only( left: 10, right: 10, bottom: 5),
                 child: 
                 // SingleChildScrollView(
                   // padding: const EdgeInsets.only(left: 10, right: 10, bottom: 10),
@@ -116,7 +125,104 @@ class NewsEntryCard extends StatelessWidget {
                           fontSize: 10
                         ),
                       ),
-                      // const SizedBox(height: 6),
+                      const SizedBox(height: 5),
+
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          InkWell(
+                            onTap: () => {
+                              Navigator.push(
+                                context, 
+                                MaterialPageRoute(builder: (context) => NewsEditPage(news: news)))
+                            }, 
+                            child: Text(
+                              "Edit",
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 10,
+                                decoration: TextDecoration.underline
+                              )
+                            )
+                          ),
+
+                          InkWell(
+                            onTap: () => {
+                              showDialog(
+                                context: context, 
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    backgroundColor: Colors.grey.shade100,
+                                    title: Text('Konfirmasi delete'),
+                                    content: Text('Are you sure you want to delete this?'),
+                                    actions: <Widget>[
+                                      TextButton(
+                                        style: TextButton.styleFrom(
+                                          backgroundColor: Colors.blue.shade900,
+                                          foregroundColor: Colors.white
+                                        ),
+                                        child: const Text("Cancel"),
+                                        onPressed: () {
+                                          Navigator.of(context).pop(); 
+                                        },
+                                      ),
+
+                                      TextButton(
+                                        style: TextButton.styleFrom(
+                                          backgroundColor: Colors.red.shade600,
+                                          foregroundColor: Colors.white
+                                        ),
+                                        child: const Text("OK"),
+                                        onPressed: () async {
+                                          final response = await request.postJson(
+                                            'http//localhost:8000/articles/delete-news-flutter',
+                                            jsonEncode({
+                                              'news_id': news.pk
+                                            }),
+                                          );
+                                          if (context.mounted) {
+                                            if (response['status'] == 'success') {
+                                              ScaffoldMessenger.of(context).showSnackBar(
+                                                const SnackBar(
+                                                  content: Text("News successfully saved!"),
+                                                )
+                                              );
+                                              Navigator.pushReplacement(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) => NewsEntryListPage(isAdminOrAuthor: true)
+                                                ),
+                                              );
+                                            } else {
+                                              ScaffoldMessenger.of(context).showSnackBar(
+                                                const SnackBar(
+                                                  content: Text("Something went wrong, please try again."),
+                                                )
+                                              );
+                                            }
+                                          }
+                                        },
+                                      ),
+                                    ],
+                                  );
+                                }
+                              )
+                              // ConfirmDelete(news:news)
+                              // Navigator.push(context, 
+                              // MaterialPageRoute(builder: (context) => ConfirmDelete(news:news)))
+                            }, 
+                            child: Text (
+                              "Delete",
+                              style: TextStyle(
+                                color: Colors.red,
+                                fontSize: 10,
+                                decoration: TextDecoration.underline,
+                                decorationColor: Colors.red,
+                              )
+                            )
+                          ),
+                        ]
+                      )
                       
                     ],
                   ),

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:provider/provider.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
-import 'package:sport_zone/news/screens/menu.dart';
 
 class CommentForm extends StatefulWidget {
     final newsId;
