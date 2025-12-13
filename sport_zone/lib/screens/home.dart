@@ -3,6 +3,10 @@ import 'package:intl/intl.dart';
 import 'package:sport_zone/news/screens/news_entry_list.dart'; // Add intl package in pubspec.yaml for currency formatting
 import 'package:sport_zone/screens/product_list.dart';
 import 'package:sport_zone/screens/profile.dart';
+import 'package:sport_zone/screens/login.dart';
+import 'package:pbp_django_auth/pbp_django_auth.dart';
+import 'package:provider/provider.dart';
+import 'package:sport_zone/providers/user_provider.dart';
 
 class SportZoneApp extends StatelessWidget {
   const SportZoneApp({super.key});
@@ -36,7 +40,8 @@ class SportZoneApp extends StatelessWidget {
 }
 
 class MainScreen extends StatefulWidget {
-  const MainScreen({super.key});
+  final int initialIndex;
+  const MainScreen({super.key, this.initialIndex = 0});
 
   @override
   State<MainScreen> createState() => _MainScreenState();
@@ -44,6 +49,12 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   int _selectedIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedIndex = widget.initialIndex;
+  }
 
   final List<Widget> _pages = [
     const HomeScreen(),
@@ -149,6 +160,99 @@ class HomeScreen extends StatelessWidget {
           style: TextStyle(fontWeight: FontWeight.w900, letterSpacing: 1.2),
         ),
         actions: [
+          Builder(
+            builder: (context) {
+              final request = Provider.of<CookieRequest>(context);
+              final user = Provider.of<UserProvider>(context);
+              if (request.loggedIn) {
+                final uname = user.username ?? 'No username';
+                final avatar = user.avatarUrl;
+                return Row(
+                  children: [
+                    InkWell(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => const Profile()),
+                        );
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                        child: Row(
+                          children: [
+                            if (avatar != null && avatar.isNotEmpty)
+                              CircleAvatar(backgroundImage: NetworkImage(avatar))
+                            else
+                              CircleAvatar(child: Text(uname.isNotEmpty ? uname[0].toUpperCase() : 'U')),
+                            const SizedBox(width: 8),
+                            Column(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text('$uname', style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
+                                const SizedBox(height: 2),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    // Logout button with red background
+                    Padding(
+                      padding: const EdgeInsets.only(right: 8.0),
+                      child: ElevatedButton.icon(
+                        onPressed: () async {
+                          // Replace URL if needed; keep trailing slash
+                          final response = await request.logout("http://localhost:8000/auth/logout/");
+                          String message = response["message"] ?? "Logout selesai";
+                          if (response['status'] == true) {
+                            try {
+                              context.read<UserProvider>().clear();
+                            } catch (_) {}
+                            if (context.mounted) {
+                              ScaffoldMessenger.of(context)
+                                ..hideCurrentSnackBar()
+                                ..showSnackBar(SnackBar(content: Text(message)));
+                              // Do not navigate to LoginPage — stay on current screen
+                            }
+                          } else {
+                            if (context.mounted) {
+                              ScaffoldMessenger.of(context)..showSnackBar(SnackBar(content: Text(message)));
+                            }
+                          }
+                        },
+                        icon: const Icon(Icons.logout, size: 18),
+                        label: const Text('Logout'),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.red, // Red background as requested
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                          elevation: 0,
+                        ),
+                      ),
+                    ),
+                  ],
+                );
+              } else {
+                return TextButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const LoginPage()),
+                    );
+                  },
+                  style: TextButton.styleFrom(
+                    backgroundColor: Colors.black,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                  ),
+                  child: const Text('Login', style: TextStyle(fontWeight: FontWeight.bold)),
+                );
+              }
+            },
+          ),
           IconButton(
             icon: const Icon(Icons.notifications_outlined),
             onPressed: () {},
@@ -172,7 +276,8 @@ class HomeScreen extends StatelessWidget {
                 color: Colors.black,
                 borderRadius: BorderRadius.circular(16),
                 image: const DecorationImage(
-                  image: NetworkImage('https://placehold.co/800x400/202124/FFFFFF?text=SPORTZONE+EVENT'),
+                  // Request PNG explicitly to avoid SVG response (web can't decode SVG via ImageProvider)
+                  image: NetworkImage('https://placehold.co/800x400/202124/FFFFFF.png?text=SPORTZONE+EVENT'),
                   fit: BoxFit.cover,
                   opacity: 0.7,
                 ),
@@ -306,12 +411,18 @@ class ArticleCard extends StatelessWidget {
         children: [
           ClipRRect(
             borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
-            child: Image.network(
-              data['image'],
-              height: 140,
-              width: double.infinity,
-              fit: BoxFit.cover,
-            ),
+              child: Image.network(
+                data['image'],
+                height: 140,
+                width: double.infinity,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) => Container(
+                  height: 140,
+                  width: double.infinity,
+                  color: Colors.grey.shade200,
+                  child: const Center(child: Icon(Icons.broken_image, color: Colors.grey)),
+                ),
+              ),
           ),
           Padding(
             padding: const EdgeInsets.all(12),
@@ -383,6 +494,11 @@ class ProductCard extends StatelessWidget {
                 data['image'],
                 width: double.infinity,
                 fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) => Container(
+                  width: double.infinity,
+                  color: Colors.grey.shade200,
+                  child: const Center(child: Icon(Icons.broken_image, color: Colors.grey)),
+                ),
               ),
             ),
           ),
