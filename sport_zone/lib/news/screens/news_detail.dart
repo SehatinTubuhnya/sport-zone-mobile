@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sport_zone/news/models/news_entry.dart';
 import 'package:sport_zone/news/widgets/comment_form.dart';
+import 'package:sport_zone/news/widgets/comment_list.dart';
 
 class NewsDetailPage extends StatelessWidget {
   final NewsEntry news;
@@ -21,6 +22,8 @@ class NewsDetailPage extends StatelessWidget {
         backgroundColor: Colors.indigo,
         foregroundColor: Colors.white,
       ),
+
+      
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -53,7 +56,7 @@ class NewsDetailPage extends StatelessWidget {
                           horizontal: 12.0, vertical: 6.0),
                       margin: const EdgeInsets.only(bottom: 12.0),
                       decoration: BoxDecoration(
-                        color: Colors.black,
+                        color: Colors.blue,
                         borderRadius: BorderRadius.circular(20.0),
                       ),
                       child: const Text(
@@ -127,34 +130,23 @@ class NewsDetailPage extends StatelessWidget {
                   Text(
                     news.fields.content,
                     style: const TextStyle(
-                      fontSize: 16.0,
+                      fontSize: 12.0,
                       height: 1.6,
                     ),
                     textAlign: TextAlign.justify,
                   ),
+
                   const SizedBox(height: 24),
 
-                  Container(
-                    padding: EdgeInsets.all(20),
-                    color: Colors.blue,
-                    child: 
-                      Row(
-                        children: [
-                          Expanded(child: Container(
-                            padding: EdgeInsets.all(20),
-                            color: Colors.black,
-                            height: 100,
-                            width: 50,
-                          ),
-                          )
-                          ,
-                          Expanded(
-                            child: CommentForm()
-                          )
-                          
-                          
-                        ],
-                      )
+                  CommentForm(news: news),
+
+                  Padding(
+                    padding: EdgeInsets.all(8),
+                    child: Expanded (
+                      child: CommentList(
+                        news: news
+                      ),
+                    ),
                   )
                 ],
               ),
