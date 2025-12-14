@@ -30,7 +30,6 @@ class _CommentListState extends State<CommentList> {
         listComments.add(Comment.fromJson(d));
       }
     }
-    print("Comment : " + listComments[0].fields.content);
     return listComments;
   }
 
@@ -44,35 +43,48 @@ class _CommentListState extends State<CommentList> {
             return const Center(child: CircularProgressIndicator());
         }
 
-        if (snapshot.hasError) {
-          return Column(
-            children: [
-              Image.network(
-                'https://cdn-icons-png.flaticon.com/512/4063/4063871.png',
-                fit: BoxFit.cover
-              ),
-              Center(
-                child: Text("Error: ${snapshot.error}")
-              )
-            ],
-          );
-        }
-
         // If data is returned but empty: []
         if (!snapshot.hasData || snapshot.data.isEmpty) {
           return  Center(
             child: Column(
               children: [
-                Image.network(
-                  'https://cdn-icons-png.flaticon.com/512/11696/11696730.png',
-                  fit: BoxFit.cover
+                Container(
+                  width: 80,
+                  height: 80,
+                  child: Image.network(
+                    'https://cdn-icons-png.flaticon.com/512/11696/11696730.png',
+                    fit: BoxFit.cover
+                  ),
                 ),
+                SizedBox(height:10),
                 Text(
                   "Belum ada komentar.",
-                  style: TextStyle(fontSize: 20, color: Color(0xff59A5D8)),
+                  style: TextStyle(
+                    fontSize: 15, 
+                    color: Colors.black),
                 ),
               ],
             )
+          );
+        }
+
+        if (snapshot.hasError) {
+          return Column(
+            children: [
+              Container(
+                width: 80,
+                height: 80,
+                child: Image.network(
+                  'https://cdn-icons-png.flaticon.com/512/4063/4063871.png',
+                  fit: BoxFit.cover
+                ),
+
+              ),
+              Center(
+                child: Text("Error: ${snapshot.error}")
+              )
+
+            ],
           );
         }
 

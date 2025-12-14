@@ -79,6 +79,7 @@ class CommentEntry extends StatelessWidget {
                     Text(
                       comment.fields.content,
                       softWrap: true,
+                      overflow: TextOverflow.ellipsis,
                     )
                   ],
                 ),

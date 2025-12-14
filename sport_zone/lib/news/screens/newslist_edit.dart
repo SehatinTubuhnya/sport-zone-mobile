@@ -16,10 +16,7 @@ class NewsEditPage extends StatefulWidget {
 
 class _NewsEditPageState extends State<NewsEditPage> {
     final _formKey = GlobalKey<FormState>();
-    String _title = "";
-    String _content = "";
     String _category = "Update"; // default
-    String _thumbnail = "";
     bool _isFeatured = false; // default
 
     final TextEditingController titleController = TextEditingController();
@@ -84,11 +81,6 @@ class _NewsEditPageState extends State<NewsEditPage> {
                           borderRadius: BorderRadius.circular(5.0),
                         ),
                       ),
-                      onChanged: (String? value) {
-                        setState(() {
-                          _title = value!;
-                        });
-                      },
                       validator: (String? value) {
                         if (value == null || value.isEmpty) {
                           return "Judul tidak boleh kosong!";
@@ -111,11 +103,6 @@ class _NewsEditPageState extends State<NewsEditPage> {
                           borderRadius: BorderRadius.circular(5.0),
                         ),
                       ),
-                      onChanged: (String? value) {
-                        setState(() {
-                          _content = value!;
-                        });
-                      },
                       validator: (String? value) {
                         if (value == null || value.isEmpty) {
                           return "Isi berita tidak boleh kosong!";
@@ -163,11 +150,6 @@ class _NewsEditPageState extends State<NewsEditPage> {
                           borderRadius: BorderRadius.circular(5.0),
                         ),
                       ),
-                      onChanged: (String? value) {
-                        setState(() {
-                          _thumbnail = value!;
-                        });
-                      },
                     ),
                   ),
 

@@ -135,29 +135,10 @@ class NewsDetailPage extends StatelessWidget {
                     ),
                     textAlign: TextAlign.justify,
                   ),
+
                   const SizedBox(height: 24),
 
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 16.0),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-
-                        // --- Profile picture ---
-                        const CircleAvatar(
-                          radius: 22,
-                          backgroundImage:NetworkImage('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ4YreOWfDX3kK-QLAbAL4ufCPc84ol2MA8Xg&s')
-                        ),
-
-                        const SizedBox(width: 12),
-
-                        // --- Comment Input ---
-                        Expanded(
-                          child: CommentForm(newsId: news.pk),
-                        ),
-                      ],
-                    ),
-                  ),
+                  CommentForm(news: news),
 
                   Padding(
                     padding: EdgeInsets.all(8),
