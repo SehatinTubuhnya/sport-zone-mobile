@@ -1,140 +1,185 @@
 import 'package:flutter/material.dart';
-
 import 'dart:convert';
 import 'package:provider/provider.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
-import 'package:sport_zone/news/screens/menu.dart';
+import 'package:sport_zone/news/screens/news_detail.dart';
+import 'package:sport_zone/news/models/news_entry.dart';
 
 class CommentForm extends StatefulWidget {
-    const CommentForm({super.key});
+    final NewsEntry news;
+    const CommentForm({super.key, required this.news});
 
     @override
     State<CommentForm> createState() => _CommentFormState();
 }
 
 class _CommentFormState extends State<CommentForm> {
-    final _formKey = GlobalKey<FormState>();
+    final TextEditingController _controller = TextEditingController();
+    bool isFocused = false;
+    String thumbnail = "";
     String _content = "";
+
+    Future<void> getProfilePic () async {
+      final request = context.read<CookieRequest>();
+      final response = await request.get(
+        "http://localhost:8000/articles/get-user/",
+      );
+
+      try{
+        if (response['status'] == 'success') {
+          setState(() {
+            thumbnail = response['profilePic'];
+          });
+        } else {
+          setState(() {
+            thumbnail = "";
+          });
+        } 
+      } catch(_) {
+        setState(() {
+          thumbnail = "";
+        });
+      }
+    }
+
+    @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      getProfilePic();
+    });
+  }
+
+        Future<void> _submitComment(CookieRequest request) async {                     
+        final response = await request.postJson(
+          "http://localhost:8000/articles/create-comment-flutter/",
+          jsonEncode({
+            "news_id": widget.news.pk,
+            "content": _content,
+          }),
+        );
+        if (context.mounted) {
+          if (response['status'] == 'success') {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text("Comment successfully added!"),
+              )
+            );
+
+            setState(() {
+              isFocused = false;
+              _controller.clear();
+              _content = "";
+            });
+
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => NewsDetailPage(news: widget.news))
+            );
+
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text(
+                  "Something went wrong, please try again."
+                ),
+              )
+            );
+
+            setState(() {
+              isFocused = false;
+              _controller.clear();
+              _content = "";
+            });
+          }
+        }
+    }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
     @override
     Widget build(BuildContext context) {
         final request = context.watch<CookieRequest>();
-        return Container(
-          color: Colors.white,
-          // child: Padding(padding: EdgeInsetsGeometry.all(20),
-            child: Form(
-              key: _formKey,
-              // filled: true,
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children:[
-                    // === Content ===
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: TextFormField(
-                        maxLines: 5,
-                        decoration: InputDecoration(
-                          hintText: "Tuliskan komentar anda ...",
-                          labelText: "Komentar",
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(5.0),
-                          ),
-                        ),
-                        onChanged: (String? value) {
-                          setState(() {
-                            _content = value!;
-                          });
-                        },
-                        validator: (String? value) {
-                          if (value == null || value.isEmpty) {
-                            return "Isi berita tidak boleh kosong!";
-                          }
-                          return null;
-                        },
-                      ),
-                    ),
+        if (thumbnail != "") {
+          return Padding (
+            padding: const EdgeInsets.symmetric(vertical: 16.0),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
 
-                    // === Tombol Simpan ===
-                    Align(
-                      alignment: Alignment.bottomCenter,
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: ElevatedButton(
-                          style: ButtonStyle(
-                            backgroundColor:
-                                WidgetStateProperty.all(Colors.indigo),
-                          ),
-                          onPressed: () {
-                            if (_formKey.currentState!.validate()) {
-                              showDialog(
-                                context: context,
-                                builder: (context) {
-                                  return AlertDialog(
-                                    title: const Text('Berita berhasil disimpan!'),
-                                    content: SingleChildScrollView(
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text('Isi: $_content'),
-                                        ],
-                                      ),
+                  // --- Profile picture ---
+                  CircleAvatar(
+                    radius: 22,
+                    backgroundImage:NetworkImage(thumbnail)
+                  ),
+
+                  const SizedBox(width: 12),
+
+                  // --- Comment Input ---
+                  Expanded(
+                    child: Container(
+                      color: Colors.white,
+                      // child: Padding(padding: EdgeInsetsGeometry.all(20),
+                        child:  
+                          SingleChildScrollView(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children:[
+                                // === Content ===
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: TextField(
+                                    controller: _controller,
+                                    onTap: () => setState(() => isFocused = true),
+                                    decoration: InputDecoration(
+                                      hintText: "Tuliskan komentar anda ...",
+                                      border: InputBorder.none
                                     ),
-                                    actions: [
-                                      TextButton(
-                                        child: const Text('OK'),
-                                        onPressed: () async {
-                                          if (_formKey.currentState!.validate()) {
-                                            // TODO: Replace the URL with your app's URL
-                                            // To connect Android emulator with Django on localhost, use URL http://10.0.2.2/
-                                            // If you using chrome,  use URL http://localhost:8000
-                                            
-                                            final response = await request.postJson(
-                                              "http://localhost:8000/create-flutter/",
-                                              jsonEncode({
-                                                "content": _content,
-                                              }),
-                                            );
-                                            if (context.mounted) {
-                                              if (response['status'] == 'success') {
-                                                ScaffoldMessenger.of(context)
-                                                    .showSnackBar(const SnackBar(
-                                                  content: Text("News successfully saved!"),
-                                                ));
-                                                Navigator.pushReplacement(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                      builder: (context) => MyHomePage()),
-                                                );
-                                              } else {
-                                                ScaffoldMessenger.of(context)
-                                                    .showSnackBar(const SnackBar(
-                                                  content: Text("Something went wrong, please try again."),
-                                                ));
-                                              }
-                                            }
-                                          }
-                                        },
-                                      ),
-                                    ],
-                                  );
-                                },
-                              );
-                            }
-                          },
-                          child: const Text(
-                            "Simpan",
-                            style: TextStyle(color: Colors.white),
+                                    maxLines: isFocused? 3 : 1,
+                                    onChanged: (value) => setState(() => _content = value),
+                                  ),
+                                ),
+
+                                if (isFocused) 
+                                  Padding(
+                                    padding: EdgeInsetsGeometry.only(bottom: 6, right: 6),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: [
+                                        TextButton(
+                                          onPressed: () {
+                                            setState(() {
+                                              isFocused = false;
+                                              _controller.clear();
+                                              _content = "";
+                                            });
+                                          }, 
+                                          child: const Text("Cancel"),
+                                        ),
+                                        TextButton(
+                                          onPressed: _content.trim().isEmpty 
+                                            ? null 
+                                            : () => _submitComment(request),
+                                          child: const Text("Comment"),
+                                        ),
+                                      ],
+                                    ),
+                                  )
+                              ],
+                            )
                           ),
-                        ),
-                      ),
-                    ),
-                  ],
-                )
+                    )
+                  ),
+                ],
               ),
-            ),
-          // ),
-        );
+          );
+        } else {
+          return SizedBox.shrink();
+        }
     }
 }

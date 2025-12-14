@@ -32,6 +32,7 @@ class SportZoneApp extends StatelessWidget {
           elevation: 0,
           surfaceTintColor: Colors.transparent,
         ),
+        popupMenuTheme: PopupMenuThemeData(color: Colors.white),
         fontFamily: 'Roboto', // Or use GoogleFonts if added
       ),
       home: const MainScreen(),
@@ -58,7 +59,7 @@ class _MainScreenState extends State<MainScreen> {
 
   final List<Widget> _pages = [
     const HomeScreen(),
-    const NewsEntryListPage(),
+    NewsEntryListPage(),
     const ProductList(),
     const Profile(),
   ];
