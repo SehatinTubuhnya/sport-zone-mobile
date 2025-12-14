@@ -197,7 +197,7 @@ class HomeScreen extends StatelessWidget {
                         ),
                       ),
                     ),
-                    // Logout button with red background
+                    // Tombol logout dengan backgroundnya merah
                     Padding(
                       padding: const EdgeInsets.only(right: 8.0),
                       child: ElevatedButton.icon(
@@ -213,7 +213,7 @@ class HomeScreen extends StatelessWidget {
                               ScaffoldMessenger.of(context)
                                 ..hideCurrentSnackBar()
                                 ..showSnackBar(SnackBar(content: Text(message)));
-                              // Do not navigate to LoginPage — stay on current screen
+                              // Jangan mengarah ke LoginPage — tetap di layar saat ini
                             }
                           } else {
                             if (context.mounted) {

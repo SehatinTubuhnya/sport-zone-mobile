@@ -140,7 +140,7 @@ class _LoginPageState extends State<LoginPage> {
                             ..showSnackBar(
                               SnackBar(
                                 content: Text(
-                                  "$message Selamat datang, $uname.",
+                                  "Login berhasil! Selamat datang, $uname.",
                                 ),
                               ),
                             );
@@ -150,7 +150,7 @@ class _LoginPageState extends State<LoginPage> {
                           showDialog(
                             context: context,
                             builder: (context) => AlertDialog(
-                              title: const Text('Login gagal'),
+                              title: const Text('Login gagal!'),
                               content: Text(response['message']),
                               actions: [
                                 TextButton(
