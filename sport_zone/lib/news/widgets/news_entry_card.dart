@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:sport_zone/news/models/news_entry.dart';
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:intl/intl.dart';
 import 'package:sport_zone/news/screens/newslist_edit.dart';
 // import 'package:sport_zone/news/widgets/confirm_delete.dart';
@@ -11,13 +10,13 @@ import 'dart:convert';
 
 class NewsEntryCard extends StatelessWidget {
   final NewsEntry news;
+  final String currentUsername;
   final VoidCallback onTap;
-
-
 
   const NewsEntryCard({
     super.key,
     required this.news,
+    required this.currentUsername,
     required this.onTap,
   });
 
@@ -86,12 +85,14 @@ class NewsEntryCard extends StatelessWidget {
 
             Padding(
               padding: EdgeInsetsGeometry.only(left: 10, right: 10, top: 6, bottom: 6), 
-              child: AutoSizeText(
+              child: Text(
                 news.fields.title,
                 maxLines: 2,
-                minFontSize: 12,
                 overflow: TextOverflow.ellipsis,
-                style: const TextStyle(fontWeight: FontWeight.bold),
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 12
+                ),
               ),
             ),
 
@@ -126,104 +127,101 @@ class NewsEntryCard extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 5),
-
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          InkWell(
-                            onTap: () => {
-                              Navigator.push(
-                                context, 
-                                MaterialPageRoute(builder: (context) => NewsEditPage(news: news)))
-                            }, 
-                            child: Text(
-                              "Edit",
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 10,
-                                decoration: TextDecoration.underline
-                              )
-                            )
-                          ),
-
-                          InkWell(
-                            onTap: () => {
-                              showDialog(
-                                context: context, 
-                                builder: (BuildContext context) {
-                                  return AlertDialog(
-                                    backgroundColor: Colors.grey.shade100,
-                                    title: Text('Konfirmasi delete'),
-                                    content: Text('Are you sure you want to delete this?'),
-                                    actions: <Widget>[
-                                      TextButton(
-                                        style: TextButton.styleFrom(
-                                          backgroundColor: Colors.blue.shade900,
-                                          foregroundColor: Colors.white
-                                        ),
-                                        child: const Text("Cancel"),
-                                        onPressed: () {
-                                          Navigator.of(context).pop(); 
-                                        },
-                                      ),
-
-                                      TextButton(
-                                        style: TextButton.styleFrom(
-                                          backgroundColor: Colors.red.shade600,
-                                          foregroundColor: Colors.white
-                                        ),
-                                        child: const Text("OK"),
-                                        onPressed: () async {
-                                          final response = await request.postJson(
-                                            'http//localhost:8000/articles/delete-news-flutter',
-                                            jsonEncode({
-                                              'news_id': news.pk
-                                            }),
-                                          );
-                                          if (context.mounted) {
-                                            if (response['status'] == 'success') {
-                                              ScaffoldMessenger.of(context).showSnackBar(
-                                                const SnackBar(
-                                                  content: Text("News successfully saved!"),
-                                                )
-                                              );
-                                              Navigator.pushReplacement(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder: (context) => NewsEntryListPage(isAdminOrAuthor: true)
-                                                ),
-                                              );
-                                            } else {
-                                              ScaffoldMessenger.of(context).showSnackBar(
-                                                const SnackBar(
-                                                  content: Text("Something went wrong, please try again."),
-                                                )
-                                              );
-                                            }
-                                          }
-                                        },
-                                      ),
-                                    ],
-                                  );
-                                }
-                              )
-                              // ConfirmDelete(news:news)
-                              // Navigator.push(context, 
-                              // MaterialPageRoute(builder: (context) => ConfirmDelete(news:news)))
-                            }, 
-                            child: Text (
-                              "Delete",
-                              style: TextStyle(
-                                color: Colors.red,
-                                fontSize: 10,
-                                decoration: TextDecoration.underline,
-                                decorationColor: Colors.red,
-                              )
-                            )
-                          ),
-                        ]
-                      )
                       
+                      if (news.fields.username ==  currentUsername)
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            InkWell(
+                              onTap: () => {
+                                Navigator.push(
+                                  context, 
+                                  MaterialPageRoute(builder: (context) => NewsEditPage(news: news)))
+                              }, 
+                              child: Text(
+                                "Edit",
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 10,
+                                  decoration: TextDecoration.underline
+                                )
+                              )
+                            ),
+
+                            InkWell(
+                              onTap: () => {
+                                showDialog(
+                                  context: context, 
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      backgroundColor: Colors.grey.shade100,
+                                      title: Text('Konfirmasi delete'),
+                                      content: Text('Are you sure you want to delete this?'),
+                                      actions: <Widget>[
+                                        TextButton(
+                                          style: TextButton.styleFrom(
+                                            backgroundColor: Colors.blue.shade900,
+                                            foregroundColor: Colors.white
+                                          ),
+                                          child: const Text("Cancel"),
+                                          onPressed: () {
+                                            Navigator.of(context).pop(); 
+                                          },
+                                        ),
+
+                                        TextButton(
+                                          style: TextButton.styleFrom(
+                                            backgroundColor: Colors.red.shade600,
+                                            foregroundColor: Colors.white
+                                          ),
+                                          child: const Text("OK"),
+                                          onPressed: () async {
+                                            final response = await request.postJson(
+                                              'http://localhost:8000/articles/delete-news-flutter/',
+                                              jsonEncode({
+                                                'news_id': news.pk
+                                              }),
+                                            );
+                                            if (context.mounted) {
+                                              if (response['status'] == 'success') {
+                                                ScaffoldMessenger.of(context).showSnackBar(
+                                                  const SnackBar(
+                                                    content: Text("News successfully deleted!"),
+                                                  )
+                                                );
+                                                Navigator.pushReplacement(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (context) => NewsEntryListPage()
+                                                  ),
+                                                );
+                                              } else {
+                                                ScaffoldMessenger.of(context).showSnackBar(
+                                                  const SnackBar(
+                                                    content: Text("Something went wrong, please try again."),
+                                                  )
+                                                );
+                                              }
+                                            }
+                                          },
+                                        ),
+                                      ],
+                                    );
+                                  }
+                                )
+                              }, 
+                              child: Text (
+                                "Delete",
+                                style: TextStyle(
+                                  color: Colors.red,
+                                  fontSize: 10,
+                                  decoration: TextDecoration.underline,
+                                  decorationColor: Colors.red,
+                                )
+                              )
+                            ),
+                          ]
+                        )
                     ],
                   ),
                 // ),

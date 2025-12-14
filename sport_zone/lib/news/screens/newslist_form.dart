@@ -201,7 +201,7 @@ class _NewsFormPageState extends State<NewsFormPage> {
                                               Navigator.pushReplacement(
                                                 context,
                                                 MaterialPageRoute(
-                                                  builder: (context) => NewsEntryListPage(isAdminOrAuthor: true)
+                                                  builder: (context) => NewsEntryListPage()
                                                 ),
                                               );
                                             } else {

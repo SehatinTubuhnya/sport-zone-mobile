@@ -7,8 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 
 class NewsEntryListPage extends StatefulWidget {
-  final bool isAdminOrAuthor;
-  const NewsEntryListPage({super.key, this.isAdminOrAuthor = false});
+  const NewsEntryListPage({super.key});
 
   @override
   State<NewsEntryListPage> createState() => _NewsEntryListPageState();
@@ -17,6 +16,47 @@ class NewsEntryListPage extends StatefulWidget {
 class _NewsEntryListPageState extends State<NewsEntryListPage> {
   String filter = "All";
   final List<String> _filterList = ['All','Transfer', 'Update', 'Exclusive',  'Match', 'Rumor', 'Analysis'];
+  bool _isAdminOrAuthor = false;
+  bool _isLoadingUser = true;
+  String username = 'AnonymousUser';
+
+  Future<void> _fetchUser() async {
+    final request = context.read<CookieRequest>();
+    if (!request.loggedIn) {
+      setState(() {
+        _isAdminOrAuthor = false;
+        _isLoadingUser = false;
+        username = 'AnonymousUser';
+      });
+      return;
+    }
+
+    try {
+      final response = await request.get(
+        "http://localhost:8000/articles/get-user/",
+      );
+
+      if (response['status'] == 'success') {
+        setState(() {
+          _isAdminOrAuthor = (response['auth'] == true);
+          _isLoadingUser = false;
+          username = response['username'];
+        });
+      } else {
+        setState(() {
+          _isAdminOrAuthor = false;
+          _isLoadingUser = false;
+          username = 'AnonymousUser';
+        });
+      }
+    } catch (_) {
+      setState(() {
+        _isAdminOrAuthor = false;
+        _isLoadingUser = false;
+        username = 'AnonymousUser';
+      });
+    }
+  }
 
   Future<List<NewsEntry>> fetchNews(CookieRequest request) async {
     // TODO: Replace the URL with your app's URL and don't forget to add a trailing slash (/)!
@@ -40,6 +80,15 @@ class _NewsEntryListPageState extends State<NewsEntryListPage> {
       }
     }
     return listNews;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _fetchUser();
+    });
   }
 
   @override
@@ -146,6 +195,7 @@ class _NewsEntryListPageState extends State<NewsEntryListPage> {
                     itemBuilder: (_, index) {
                       return NewsEntryCard(
                         news: snapshot.data![index], 
+                        currentUsername: username,
                         onTap: () {
                           Navigator.push(
                             context,
@@ -163,25 +213,25 @@ class _NewsEntryListPageState extends State<NewsEntryListPage> {
           ),
         ),
 
-        // if (widget.isAdmin == true || widget.isWriter == true)
-        Positioned(
-          bottom: 10,
-          right: 10,
-          child: ElevatedButton(
-            onPressed: ()  {
-              Navigator.push(
-                context, 
-                MaterialPageRoute(builder: (context) => NewsFormPage()));
-            }, 
-            style: ElevatedButton.styleFrom(
-                shape: const CircleBorder(), // Makes the button circular
-                padding: const EdgeInsets.all(10), // Adjust padding as needed
-                backgroundColor: Colors.black, // Button background color
-                foregroundColor: Colors.white, // Icon/text color
+        if (_isAdminOrAuthor == true && _isLoadingUser == false) 
+          Positioned(
+            bottom: 10,
+            right: 10,
+            child: ElevatedButton(
+              onPressed: ()  {
+                Navigator.push(
+                  context, 
+                  MaterialPageRoute(builder: (context) => NewsFormPage()));
+              }, 
+              style: ElevatedButton.styleFrom(
+                  shape: const CircleBorder(), 
+                  padding: const EdgeInsets.all(10), 
+                  backgroundColor: Colors.black, 
+                  foregroundColor: Colors.white, 
+              ),
+              child: const Icon(Icons.add_circle), 
             ),
-            child: const Icon(Icons.add_circle), // The icon insid
-          ),
-        )        
+          )        
       ]
     );
   }

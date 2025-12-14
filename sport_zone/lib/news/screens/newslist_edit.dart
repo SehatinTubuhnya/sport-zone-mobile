@@ -22,6 +22,10 @@ class _NewsEditPageState extends State<NewsEditPage> {
     String _thumbnail = "";
     bool _isFeatured = false; // default
 
+    final TextEditingController titleController = TextEditingController();
+    final TextEditingController contentController = TextEditingController();
+    final TextEditingController thumbnailController = TextEditingController();
+
     final List<String> _categories = [
       'Transfer',
       'Update',
@@ -37,6 +41,17 @@ class _NewsEditPageState extends State<NewsEditPage> {
       // Initialize the state variable with the attribute's default value
       _category = widget.news.fields.category;
       _isFeatured = widget.news.fields.isFeatured;
+      titleController.text = widget.news.fields.title;
+      contentController.text = widget.news.fields.content;
+      thumbnailController.text = widget.news.fields.thumbnail;
+    }
+
+    @override
+    void dispose() {
+      titleController.dispose();
+      contentController.dispose();
+      thumbnailController.dispose();
+      super.dispose();
     }
 
     @override
@@ -61,7 +76,7 @@ class _NewsEditPageState extends State<NewsEditPage> {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: TextFormField(
-                      initialValue: widget.news.fields.title,
+                      controller: titleController,
                       decoration: InputDecoration(
                         hintText: "Judul Berita",
                         labelText: "Judul Berita",
@@ -87,7 +102,7 @@ class _NewsEditPageState extends State<NewsEditPage> {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: TextFormField(
-                      initialValue: widget.news.fields.content,
+                      controller: contentController,
                       maxLines: 5,
                       decoration: InputDecoration(
                         hintText: "Isi Berita",
@@ -140,7 +155,7 @@ class _NewsEditPageState extends State<NewsEditPage> {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: TextFormField(
-                      initialValue: widget.news.fields.thumbnail,
+                      controller: thumbnailController,
                       decoration: InputDecoration(
                         hintText: "URL Thumbnail (opsional)",
                         labelText: "URL Thumbnail",
@@ -192,10 +207,10 @@ class _NewsEditPageState extends State<NewsEditPage> {
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
-                                        Text('Judul: $_title'),
-                                        Text('Isi: $_content'),
+                                        Text('Judul: ${titleController.text}'),
+                                        Text('Isi: ${contentController.text}'),
                                         Text('Kategori: $_category'),
-                                        Text('Thumbnail: $_thumbnail'),
+                                        Text('Thumbnail: ${thumbnailController.text}'),
                                         Text('Unggulan: ${_isFeatured ? "Ya" : "Tidak"}'),
                                       ],
                                     ),
@@ -212,23 +227,24 @@ class _NewsEditPageState extends State<NewsEditPage> {
                                           final response = await request.postJson(
                                             "http://localhost:8000/articles/edit-news-flutter/",
                                             jsonEncode({
-                                              "title": _title,
-                                              "content": _content,
-                                              "thumbnail": _thumbnail,
+                                              "title": titleController.text,
+                                              "content": contentController.text,
+                                              "thumbnail": thumbnailController.text,
                                               "category": _category,
                                               "is_featured": _isFeatured,
+                                              "news_id": widget.news.pk
                                             }),
                                           );
                                           if (context.mounted) {
                                             if (response['status'] == 'success') {
                                               ScaffoldMessenger.of(context)
                                                   .showSnackBar(const SnackBar(
-                                                content: Text("News successfully saved!"),
+                                                content: Text("News successfully edited!"),
                                               ));
                                               Navigator.pushReplacement(
                                                 context,
                                                 MaterialPageRoute(
-                                                  builder: (context) => NewsEntryListPage(isAdminOrAuthor: true)
+                                                  builder: (context) => NewsEntryListPage()
                                                 ),
                                               );
                                             } else {
