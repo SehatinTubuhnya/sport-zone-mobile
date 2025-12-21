@@ -1,7 +1,3 @@
-// To parse this JSON data, do
-//
-//     final recent = recentFromJson(jsonString);
-
 import 'dart:convert';
 
 Recent recentFromJson(String str) => Recent.fromJson(json.decode(str));
