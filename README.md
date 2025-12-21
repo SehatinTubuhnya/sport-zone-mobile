@@ -1,6 +1,10 @@
 # SportZone (Mobile)
 Aplikasi SportZone adalah aplikasi mobile yang mirip dengan website sportzone.id. Ini adalah aplikasi area serba olahraga, cocok untuk forum global. Kesannya adalah modern dan mudah diingat karena merupakan gaya internasional. SportZone.id cocok untuk platform berita & forum dengan target generasi muda.
 
+[![Build Status](https://app.bitrise.io/app/1d296e39-1c38-44a2-b412-0c7a05ff0686/status.svg?token=WgyWJzqBfyC8tYdvU4ru0w&branch=main)](https://app.bitrise.io/app/1d296e39-1c38-44a2-b412-0c7a05ff0686)
+
+Bitrise APK Link: https://app.bitrise.io/app/1d296e39-1c38-44a2-b412-0c7a05ff0686/installable-artifacts/3a9210f0a8fc14c0/public-install-page/5a199ca125e717b343025f1ece6345aa
+
 Planning Sheet: https://docs.google.com/spreadsheets/d/11mEVC2aRkmiB2F0PeraHReVkrHrGKTueJE1h_denQDk/edit
 
 ## Nama & NPM Anggota Kelompok
