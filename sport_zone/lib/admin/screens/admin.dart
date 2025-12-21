@@ -97,7 +97,6 @@ class DashboardTab extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Statistik Grid
                   GridView.count(
                     crossAxisCount: 2,
                     crossAxisSpacing: 12,
