@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:pbp_django_auth/pbp_django_auth.dart';
+import '../models/products_entry.dart';
 
 class AddProductDialog extends StatefulWidget {
   const AddProductDialog({super.key});
@@ -12,133 +11,88 @@ class AddProductDialog extends StatefulWidget {
 class _AddProductDialogState extends State<AddProductDialog> {
   final _formKey = GlobalKey<FormState>();
 
-  final _nameController = TextEditingController();
-  final _priceController = TextEditingController();
-  final _thumbnailController = TextEditingController();
-  final _descriptionController = TextEditingController();
+  final nameController = TextEditingController();
+  final priceController = TextEditingController();
+  final thumbnailController = TextEditingController();
+  final descController = TextEditingController();
 
-  String _selectedCategory = 'Equipment';
-  bool _isFeatured = false;
-  bool _isLoading = false;
-
-  final List<String> categories = [
-    'Apparel',
-    'Equipment',
-    'Ball',
-  ];
-
-  void _submit() async {
-  if (!_formKey.currentState!.validate()) return;
-
-  final request = context.read<CookieRequest>();
-
-  final response = await request.post(
-    'http://localhost:8000/products/api/products/create/',
-    {
-      'name': _nameController.text,
-      'price': _priceController.text,
-      'category': _selectedCategory, // equipment / apparel / ball
-      'description': _descriptionController.text,
-      'thumbnail': _thumbnailController.text,
-      'is_featured': _isFeatured.toString(),
-    },
-  );
-
-  if (response['success'] == true) {
-    Navigator.pop(context, true);
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Produk berhasil ditambahkan')),
-    );
-  } else {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(response['error'] ?? 'Gagal')),
-    );
-  }
-}
+  String category = "equipment";
+  bool featured = false;
 
   @override
   Widget build(BuildContext context) {
     return Dialog(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Form(
-          key: _formKey,
-          child: SingleChildScrollView(
+      insetPadding: const EdgeInsets.all(24),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      child: SizedBox(
+        width: 600,
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Form(
+            key: _formKey,
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Text(
-                  'Tambah Produk Baru',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  "Tambah Produk Baru",
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 16),
 
-                _buildTextField('Nama Produk', _nameController),
-                _buildTextField(
-                  'Harga (Rp)',
-                  _priceController,
-                  keyboardType: TextInputType.number,
-                ),
+                _input("Nama Produk", nameController),
+                _input("Harga (Rp)", priceController, isNumber: true),
 
                 const SizedBox(height: 12),
-                const Text('Kategori'),
+                const Text("Kategori"),
                 DropdownButtonFormField<String>(
-                  value: _selectedCategory,
-                  items: categories
-                      .map((c) =>
-                          DropdownMenuItem(value: c, child: Text(c)))
-                      .toList(),
-                  onChanged: (value) =>
-                      setState(() => _selectedCategory = value!),
+                  value: category,
+                  items: const [
+                    DropdownMenuItem(value: "equipment", child: Text("Equipment")),
+                    DropdownMenuItem(value: "apparel", child: Text("Apparel")),
+                  ],
+                  onChanged: (v) => setState(() => category = v!),
                 ),
 
-                _buildTextField(
-                    'URL Thumbnail (opsional)', _thumbnailController),
-                _buildTextField(
-                  'Deskripsi',
-                  _descriptionController,
-                  maxLines: 3,
-                ),
+                _input("URL Thumbnail (opsional)", thumbnailController),
+                _input("Deskripsi", descController, maxLines: 3),
 
                 CheckboxListTile(
-                  value: _isFeatured,
-                  onChanged: (value) =>
-                      setState(() => _isFeatured = value!),
-                  title: const Text('Featured'),
-                  controlAffinity: ListTileControlAffinity.leading,
+                  value: featured,
+                  onChanged: (v) => setState(() => featured = v!),
+                  title: const Text("Featured"),
+                  contentPadding: EdgeInsets.zero,
                 ),
 
                 const SizedBox(height: 16),
-
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     TextButton(
-                      onPressed:
-                          _isLoading ? null : () => Navigator.pop(context),
-                      child: const Text('Batal'),
+                      onPressed: () => Navigator.pop(context),
+                      child: const Text("Batal"),
                     ),
                     const SizedBox(width: 8),
                     ElevatedButton(
-                      onPressed: _isLoading ? null : _submit,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.black,
-                      ),
-                      child: _isLoading
-                          ? const SizedBox(
-                              height: 16,
-                              width: 16,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2,
-                                color: Colors.white,
-                              ),
-                            )
-                          : const Text('Simpan'),
+                      onPressed: () {
+                        final product = Product(
+                          id: DateTime.now().millisecondsSinceEpoch,
+                          name: nameController.text,
+                          price: int.parse(priceController.text),
+                          category: category,
+                          description: descController.text,
+                          thumbnail: thumbnailController.text.isEmpty
+                              ? null
+                              : thumbnailController.text,
+                          isFeatured: featured,
+                          sellerId: 1,
+                        );
+                        Navigator.pop(context, product);
+                      },
+                      child: const Text("Simpan"),
                     ),
                   ],
-                ),
+                )
               ],
             ),
           ),
@@ -147,20 +101,14 @@ class _AddProductDialogState extends State<AddProductDialog> {
     );
   }
 
-  Widget _buildTextField(
-    String label,
-    TextEditingController controller, {
-    int maxLines = 1,
-    TextInputType keyboardType = TextInputType.text,
-  }) {
+  Widget _input(String label, TextEditingController c,
+      {bool isNumber = false, int maxLines = 1}) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
       child: TextFormField(
-        controller: controller,
+        controller: c,
         maxLines: maxLines,
-        keyboardType: keyboardType,
-        validator: (value) =>
-            value == null || value.isEmpty ? 'Wajib diisi' : null,
+        keyboardType: isNumber ? TextInputType.number : TextInputType.text,
         decoration: InputDecoration(
           labelText: label,
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
