@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:sport_zone/news/screens/news_entry_list.dart'; // Add intl package in pubspec.yaml for currency formatting
-import 'package:sport_zone/screens/product_list.dart';
+import 'package:sport_zone/products/widget/product_list.dart';
 import 'package:sport_zone/profile/screens/profile.dart';
 import 'package:sport_zone/screens/login.dart';
 import 'package:sport_zone/config.dart';
