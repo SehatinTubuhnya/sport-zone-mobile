@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:sport_zone/admin/models/admin_summary.dart';
 import 'package:sport_zone/admin/models/action_log.dart';
 import 'package:sport_zone/admin/models/account.dart';
+import 'package:sport_zone/config.dart';
 import 'package:provider/provider.dart';
 import 'dart:convert';
 import 'package:intl/intl.dart';
@@ -69,9 +70,7 @@ class DashboardTab extends StatelessWidget {
   const DashboardTab({super.key});
 
   Future<AdminSummary> fetchData(CookieRequest request) async {
-    final response = await request.get(
-      'http://localhost:8000/admin/api/summary',
-    );
+    final response = await request.get('$SPORTZONE_URL/admin/api/summary');
 
     return AdminSummary.fromJson(response);
   }
@@ -220,7 +219,7 @@ class _AccountsTabState extends State<AccountsTab> {
 
     try {
       final response = await request.get(
-        "http://localhost:8000/admin/api/accounts/all",
+        "$SPORTZONE_URL/admin/api/accounts/all",
       );
 
       setState(() {
@@ -241,7 +240,7 @@ class _AccountsTabState extends State<AccountsTab> {
     int id,
   ) async {
     final response = await request.postJson(
-      'http://localhost:8000/admin/api/accounts/delete',
+      "$SPORTZONE_URL/admin/api/accounts/delete",
       jsonEncode({"id": id}),
     );
 
@@ -509,7 +508,7 @@ class _AccountsTabState extends State<AccountsTab> {
                         onPressed: () async {
                           if (_formKey.currentState!.validate()) {
                             final response = await request.postJson(
-                              'http://localhost:8000/admin/api/accounts/edit',
+                              '$SPORTZONE_URL/admin/api/accounts/edit',
                               jsonEncode({
                                 "id": account.id,
                                 "username": _editUsername,
@@ -604,7 +603,7 @@ class _ActionLogsTabState extends State<ActionLogsTab> {
 
     try {
       final response = await request.get(
-        "http://localhost:8000/admin/api/action-logs/all",
+        "$SPORTZONE_URL/admin/api/action-logs/all",
       );
 
       setState(() {
@@ -625,7 +624,7 @@ class _ActionLogsTabState extends State<ActionLogsTab> {
     String id,
   ) async {
     final response = await request.postJson(
-      'http://localhost:8000/admin/api/action-logs/delete',
+      '$SPORTZONE_URL/admin/api/action-logs/delete',
       jsonEncode({
         "ids": [id],
       }),

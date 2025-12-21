@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:sport_zone/news/models/news_entry.dart';
 import 'package:sport_zone/news/models/comment.dart';
 import 'package:sport_zone/news/widgets/comment_entry.dart';
+import 'package:sport_zone/config.dart';
 import 'package:provider/provider.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 
@@ -18,11 +19,13 @@ class _CommentListState extends State<CommentList> {
     // TODO: Replace the URL with your app's URL and don't forget to add a trailing slash (/)!
     // To connect Android emulator with Django on localhost, use URL http://10.0.2.2/
     // If you using chrome,  use URL http://localhost:8000
-    
-    final response = await request.get('http://localhost:8000/articles/get-comment-by-id/${widget.news.pk}');
+
+    final response = await request.get(
+      '$SPORTZONE_URL/articles/get-comment-by-id/${widget.news.pk}',
+    );
     // Decode response to json format
     var data = response;
-    
+
     // Convert json data to NewsEntry objects
     List<Comment> listComments = [];
     for (var d in data) {
@@ -36,16 +39,16 @@ class _CommentListState extends State<CommentList> {
   @override
   Widget build(BuildContext context) {
     final request = context.watch<CookieRequest>();
-    return FutureBuilder (
+    return FutureBuilder(
       future: fetchComments(request),
       builder: (context, AsyncSnapshot snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
+          return const Center(child: CircularProgressIndicator());
         }
 
         // If data is returned but empty: []
         if (!snapshot.hasData || snapshot.data.isEmpty) {
-          return  Center(
+          return Center(
             child: Column(
               children: [
                 Container(
@@ -53,18 +56,16 @@ class _CommentListState extends State<CommentList> {
                   height: 80,
                   child: Image.network(
                     'https://cdn-icons-png.flaticon.com/512/11696/11696730.png',
-                    fit: BoxFit.cover
+                    fit: BoxFit.cover,
                   ),
                 ),
-                SizedBox(height:10),
+                SizedBox(height: 10),
                 Text(
                   "Belum ada komentar.",
-                  style: TextStyle(
-                    fontSize: 15, 
-                    color: Colors.black),
+                  style: TextStyle(fontSize: 15, color: Colors.black),
                 ),
               ],
-            )
+            ),
           );
         }
 
@@ -76,14 +77,10 @@ class _CommentListState extends State<CommentList> {
                 height: 80,
                 child: Image.network(
                   'https://cdn-icons-png.flaticon.com/512/4063/4063871.png',
-                  fit: BoxFit.cover
+                  fit: BoxFit.cover,
                 ),
-
               ),
-              Center(
-                child: Text("Error: ${snapshot.error}")
-              )
-
+              Center(child: Text("Error: ${snapshot.error}")),
             ],
           );
         }
@@ -93,9 +90,8 @@ class _CommentListState extends State<CommentList> {
           width: double.infinity,
           child: ListView.builder(
             itemCount: snapshot.data!.length,
-            itemBuilder: (_, index) => CommentEntry(
-              comment: snapshot.data![index],
-            ),
+            itemBuilder: (_, index) =>
+                CommentEntry(comment: snapshot.data![index]),
           ),
         );
       },

@@ -4,6 +4,7 @@ import 'package:sport_zone/news/screens/news_entry_list.dart'; // Add intl packa
 import 'package:sport_zone/screens/product_list.dart';
 import 'package:sport_zone/profile/screens/profile.dart';
 import 'package:sport_zone/screens/login.dart';
+import 'package:sport_zone/config.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
 import 'package:sport_zone/providers/user_provider.dart';
@@ -77,7 +78,7 @@ class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
   Future<Recent> _fetchRecent(CookieRequest request) async {
-    final response = await request.get('http://localhost:8000/api/recent');
+    final response = await request.get('$SPORTZONE_URL/api/recent');
     return Recent.fromJson(response);
   }
 
@@ -152,7 +153,7 @@ class HomeScreen extends StatelessWidget {
                         onPressed: () async {
                           // Replace URL if needed; keep trailing slash
                           final response = await request.logout(
-                            "http://localhost:8000/auth/logout/",
+                            "$SPORTZONE_URL/auth/logout/",
                           );
                           String message =
                               response["message"] ?? "Logout selesai";

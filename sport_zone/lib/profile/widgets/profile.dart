@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'dart:convert';
+import 'package:sport_zone/config.dart';
 
 class Profile extends StatelessWidget {
   final String? username;
@@ -16,7 +17,7 @@ class Profile extends StatelessWidget {
 
   Future<ProfileDetail> _fetchProfileDetail(CookieRequest request) async {
     final response = await request.get(
-      'http://localhost:8000/profile/api/detail/${username ?? ''}',
+      '$SPORTZONE_URL/profile/api/detail/${username ?? ''}',
     );
 
     return ProfileDetail.fromJson(response);
@@ -97,7 +98,7 @@ class _ProfileDisplayState extends State<ProfileDisplay>
     int userId,
   ) async {
     final response = await request.get(
-      'http://localhost:8000/profile/api/$userId/content?tab=artikel',
+      '$SPORTZONE_URL/profile/api/$userId/content?tab=artikel',
     );
 
     return _mapProfileArticleContent(response["data"]);
@@ -112,7 +113,7 @@ class _ProfileDisplayState extends State<ProfileDisplay>
     int userId,
   ) async {
     final response = await request.get(
-      'http://localhost:8000/profile/api/$userId/content?tab=produk',
+      '$SPORTZONE_URL/profile/api/$userId/content?tab=produk',
     );
 
     return _mapProfileProductContent(response["data"]);
@@ -123,7 +124,7 @@ class _ProfileDisplayState extends State<ProfileDisplay>
     int userId,
   ) async {
     final response = await request.get(
-      'http://localhost:8000/profile/api/$userId/content',
+      '$SPORTZONE_URL/profile/api/$userId/content',
     );
 
     return response["data"];
@@ -727,7 +728,7 @@ class _ProfileDisplayState extends State<ProfileDisplay>
                       onPressed: () async {
                         if (_formKey.currentState!.validate()) {
                           final response = await request.postJson(
-                            'http://localhost:8000/profile/api/update/',
+                            '$SPORTZONE_URL/profile/api/update/',
                             jsonEncode({
                               "new_password": _editPassword,
                               "profile_pic": _editPfp,

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:sport_zone/screens/login.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
+import 'package:sport_zone/config.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -49,66 +50,81 @@ class _RegisterPageState extends State<RegisterPage> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  const SizedBox(height:20),
-                  SizedBox(height: 65.0, width: 320, child:
-                  TextFormField(
-                    controller: _usernameController,
-                    decoration: const InputDecoration(
-                      labelText: 'Nama pengguna',
-                      hintText: 'Silakan masukkan nama pengguna',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(12.0)),
+                  const SizedBox(height: 20),
+                  SizedBox(
+                    height: 65.0,
+                    width: 320,
+                    child: TextFormField(
+                      controller: _usernameController,
+                      decoration: const InputDecoration(
+                        labelText: 'Nama pengguna',
+                        hintText: 'Silakan masukkan nama pengguna',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(12.0)),
+                        ),
+                        contentPadding: EdgeInsets.symmetric(
+                          horizontal: 12.0,
+                          vertical: 8.0,
+                        ),
                       ),
-                      contentPadding:
-                          EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Silakan masukkan nama pengguna';
+                        }
+                        return null;
+                      },
                     ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Silakan masukkan nama pengguna';
-                      }
-                      return null;
-                    },
-                  )),
-                  SizedBox(height: 65.0, width:320, child:
-                  TextFormField(
-                    controller: _passwordController,
-                    decoration: const InputDecoration(
-                      labelText: 'Kata sandi',
-                      hintText: 'Masukkan kata sandi',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(12.0)),
+                  ),
+                  SizedBox(
+                    height: 65.0,
+                    width: 320,
+                    child: TextFormField(
+                      controller: _passwordController,
+                      decoration: const InputDecoration(
+                        labelText: 'Kata sandi',
+                        hintText: 'Masukkan kata sandi',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(12.0)),
+                        ),
+                        contentPadding: EdgeInsets.symmetric(
+                          horizontal: 12.0,
+                          vertical: 8.0,
+                        ),
                       ),
-                      contentPadding:
-                          EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
+                      obscureText: true,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Silakan masukkan kata sandimu';
+                        }
+                        return null;
+                      },
                     ),
-                    obscureText: true,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Silakan masukkan kata sandimu';
-                      }
-                      return null;
-                    },
-                  )),
-                  SizedBox(height:65, width:320, child:
-                  TextFormField(
-                    controller: _confirmPasswordController,
-                    decoration: const InputDecoration(
-                      labelText: 'Konfirmasi kata sandi',
-                      hintText: 'Konfirmasikan kata sandi',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(12.0)),
+                  ),
+                  SizedBox(
+                    height: 65,
+                    width: 320,
+                    child: TextFormField(
+                      controller: _confirmPasswordController,
+                      decoration: const InputDecoration(
+                        labelText: 'Konfirmasi kata sandi',
+                        hintText: 'Konfirmasikan kata sandi',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(12.0)),
+                        ),
+                        contentPadding: EdgeInsets.symmetric(
+                          horizontal: 12.0,
+                          vertical: 8.0,
+                        ),
                       ),
-                      contentPadding:
-                          EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
+                      obscureText: true,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Silakan konfirmasikan kata sandimu';
+                        }
+                        return null;
+                      },
                     ),
-                    obscureText: true,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Silakan konfirmasikan kata sandimu';
-                      }
-                      return null;
-                    },
-                  )),
+                  ),
                   const SizedBox(height: 24.0),
                   ElevatedButton(
                     onPressed: () async {
@@ -119,14 +135,15 @@ class _RegisterPageState extends State<RegisterPage> {
                       // Check credentials
                       // Change the URL and don't forget to add trailing slash (/) at the end of URL!
                       // To connect Android emulator with Django on localhost, use URL http://10.0.2.2/
-                      // If you using chrome,  use URL http://localhost:8000       
+                      // If you using chrome,  use URL http://localhost:8000
                       final response = await request.postJson(
-                          "http://localhost:8000/auth/register/",
-                          jsonEncode({
-                            "username": username,
-                            "password1": password1,
-                            "password2": password2,
-                          }));
+                        "$SPORTZONE_URL/auth/register/",
+                        jsonEncode({
+                          "username": username,
+                          "password1": password1,
+                          "password2": password2,
+                        }),
+                      );
                       if (context.mounted) {
                         if (response['status'] == 'success') {
                           ScaffoldMessenger.of(context).showSnackBar(
@@ -137,15 +154,14 @@ class _RegisterPageState extends State<RegisterPage> {
                           Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => const LoginPage()),
+                              builder: (context) => const LoginPage(),
+                            ),
                           );
                         } else {
                           String message = response['message'];
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(message),
-                            ),
-                          );
+                          ScaffoldMessenger.of(
+                            context,
+                          ).showSnackBar(SnackBar(content: Text(message)));
                         }
                       }
                     },

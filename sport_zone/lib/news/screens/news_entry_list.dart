@@ -3,6 +3,7 @@ import 'package:sport_zone/news/models/news_entry.dart';
 import 'package:sport_zone/news/screens/news_detail.dart';
 import 'package:sport_zone/news/screens/newslist_form.dart';
 import 'package:sport_zone/news/widgets/news_entry_card.dart';
+import 'package:sport_zone/config.dart';
 import 'package:provider/provider.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 
@@ -15,7 +16,15 @@ class NewsEntryListPage extends StatefulWidget {
 
 class _NewsEntryListPageState extends State<NewsEntryListPage> {
   String filter = "All";
-  final List<String> _filterList = ['All','Transfer', 'Update', 'Exclusive',  'Match', 'Rumor', 'Analysis'];
+  final List<String> _filterList = [
+    'All',
+    'Transfer',
+    'Update',
+    'Exclusive',
+    'Match',
+    'Rumor',
+    'Analysis',
+  ];
   bool _isAdminOrAuthor = false;
   bool _isLoadingUser = true;
   String username = 'AnonymousUser';
@@ -32,9 +41,7 @@ class _NewsEntryListPageState extends State<NewsEntryListPage> {
     }
 
     try {
-      final response = await request.get(
-        "http://localhost:8000/articles/get-user/",
-      );
+      final response = await request.get("$SPORTZONE_URL/articles/get-user/");
 
       if (response['status'] == 'success') {
         setState(() {
@@ -62,11 +69,11 @@ class _NewsEntryListPageState extends State<NewsEntryListPage> {
     // TODO: Replace the URL with your app's URL and don't forget to add a trailing slash (/)!
     // To connect Android emulator with Django on localhost, use URL http://10.0.2.2/
     // If you using chrome,  use URL http://localhost:8000
-    
-    final response = await request.get('http://localhost:8000/articles/json/');
+
+    final response = await request.get('$SPORTZONE_URL/articles/json/');
     // Decode response to json format
     var data = response;
-    
+
     // Convert json data to NewsEntry objects
     List<NewsEntry> listNews = [];
     for (var d in data) {
@@ -101,23 +108,20 @@ class _NewsEntryListPageState extends State<NewsEntryListPage> {
             title: const Text('Berita'),
             actions: [
               Padding(
-                padding: EdgeInsets.only(right : 10),
+                padding: EdgeInsets.only(right: 10),
                 child: PopupMenuButton<String>(
                   padding: EdgeInsets.all(10),
                   tooltip: "Filter",
                   icon: Row(
                     children: [
-                      Text(
-                        "Filter",
-                        style: TextStyle(color: Colors.black),
-                      ),
+                      Text("Filter", style: TextStyle(color: Colors.black)),
                       const SizedBox(width: 4),
                       const Icon(Icons.arrow_drop_down, color: Colors.black),
                     ],
                   ),
                   onSelected: (String value) {
                     setState(() {
-                      filter = value;   // update filter value
+                      filter = value; // update filter value
                     });
                   },
                   itemBuilder: (context) {
@@ -128,111 +132,111 @@ class _NewsEntryListPageState extends State<NewsEntryListPage> {
                           padding: EdgeInsets.all(10),
                           child: Text(
                             option,
-                            style: TextStyle(
-                              color: Colors.black
-                            ),
-                          )
+                            style: TextStyle(color: Colors.black),
+                          ),
                         ),
                       );
                     }).toList();
                   },
                 ),
               ),
-            ]
+            ],
           ),
-          
+
           body: FutureBuilder(
             future: fetchNews(request),
-              builder: (context, AsyncSnapshot snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
-                }
+            builder: (context, AsyncSnapshot snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
+              }
 
-                if (snapshot.hasError) {
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
+              if (snapshot.hasError) {
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Image.network(
+                      'https://cdn-icons-png.flaticon.com/512/4063/4063871.png',
+                      fit: BoxFit.cover,
+                    ),
+                    Center(child: Text("Error: ${snapshot.error}")),
+                  ],
+                );
+              }
+
+              // If data is returned but empty: []
+              if (!snapshot.hasData || snapshot.data.isEmpty) {
+                return Center(
+                  child: Column(
                     children: [
                       Image.network(
-                        'https://cdn-icons-png.flaticon.com/512/4063/4063871.png',
-                        fit: BoxFit.cover
+                        'https://cdn-icons-png.flaticon.com/512/11696/11696730.png',
+                        fit: BoxFit.cover,
                       ),
-                      Center(
-                        child: Text("Error: ${snapshot.error}")
-                      )
+                      Text(
+                        "Belum ada berita.",
+                        style: TextStyle(
+                          fontSize: 20,
+                          color: Color(0xff59A5D8),
+                        ),
+                      ),
                     ],
-                  );
-                }
-
-                // If data is returned but empty: []
-                if (!snapshot.hasData || snapshot.data.isEmpty) {
-                  return  Center(
-                    child: Column(
-                      children: [
-                        Image.network(
-                          'https://cdn-icons-png.flaticon.com/512/11696/11696730.png',
-                          fit: BoxFit.cover
-                        ),
-                        Text(
-                          "Belum ada berita.",
-                          style: TextStyle(fontSize: 20, color: Color(0xff59A5D8)),
-                        ),
-                      ],
-                    )
-                  );
-                }
-
-                // Data exists
-                return Padding(
-                  padding: EdgeInsets.all(10),
-                  child: GridView.builder(
-                    itemCount: snapshot.data!.length,
-                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      crossAxisSpacing: 8,
-                      mainAxisSpacing: 8,
-                      childAspectRatio: 0.6
-                    ),
-                    itemBuilder: (_, index) {
-                      return NewsEntryCard(
-                        news: snapshot.data![index], 
-                        currentUsername: username,
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  NewsDetailPage(news: snapshot.data![index]),
-                            ),
-                          );
-                        },
-                      );
-                    },
                   ),
                 );
-              },
+              }
+
+              // Data exists
+              return Padding(
+                padding: EdgeInsets.all(10),
+                child: GridView.builder(
+                  itemCount: snapshot.data!.length,
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    crossAxisSpacing: 8,
+                    mainAxisSpacing: 8,
+                    childAspectRatio: 0.6,
+                  ),
+                  itemBuilder: (_, index) {
+                    return NewsEntryCard(
+                      news: snapshot.data![index],
+                      currentUsername: username,
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                NewsDetailPage(news: snapshot.data![index]),
+                          ),
+                        );
+                      },
+                    );
+                  },
+                ),
+              );
+            },
           ),
         ),
 
-        if (_isAdminOrAuthor == true && _isLoadingUser == false) 
+        if (_isAdminOrAuthor == true && _isLoadingUser == false)
           Positioned(
             bottom: 10,
             right: 10,
             child: ElevatedButton(
-              onPressed: ()  {
+              onPressed: () {
                 Navigator.push(
-                  context, 
-                  MaterialPageRoute(builder: (context) => NewsFormPage()));
-              }, 
+                  context,
+                  MaterialPageRoute(builder: (context) => NewsFormPage()),
+                );
+              },
               style: ElevatedButton.styleFrom(
-                  shape: const CircleBorder(), 
-                  padding: const EdgeInsets.all(10), 
-                  backgroundColor: Colors.black, 
-                  foregroundColor: Colors.white, 
+                shape: const CircleBorder(),
+                padding: const EdgeInsets.all(10),
+                backgroundColor: Colors.black,
+                foregroundColor: Colors.white,
               ),
-              child: const Icon(Icons.add_circle), 
+              child: const Icon(Icons.add_circle),
             ),
-          )        
-      ]
+          ),
+      ],
     );
   }
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:sport_zone/news/models/news_entry.dart';
 import 'package:sport_zone/news/widgets/comment_form.dart';
 import 'package:sport_zone/news/widgets/comment_list.dart';
+import 'package:sport_zone/config.dart';
 
 class NewsDetailPage extends StatelessWidget {
   final NewsEntry news;
@@ -9,8 +10,20 @@ class NewsDetailPage extends StatelessWidget {
 
   String _formatDate(DateTime date) {
     // Simple date formatter without intl package
-    final months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 
-                    'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    final months = [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
+    ];
     return '${date.day} ${months[date.month - 1]} ${date.year}, ${date.hour.toString().padLeft(2, '0')}:${date.minute.toString().padLeft(2, '0')}';
   }
 
@@ -23,7 +36,6 @@ class NewsDetailPage extends StatelessWidget {
         foregroundColor: Colors.white,
       ),
 
-      
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -31,7 +43,7 @@ class NewsDetailPage extends StatelessWidget {
             // Thumbnail image
             if (news.fields.thumbnail.isNotEmpty)
               Image.network(
-                'http://localhost:8000/articles/proxy-image/?url=${Uri.encodeComponent(news.fields.thumbnail)}',
+                '$SPORTZONE_URL/articles/proxy-image/?url=${Uri.encodeComponent(news.fields.thumbnail)}',
                 width: double.infinity,
                 height: 250,
                 fit: BoxFit.cover,
@@ -43,7 +55,7 @@ class NewsDetailPage extends StatelessWidget {
                   ),
                 ),
               ),
-            
+
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(
@@ -53,7 +65,9 @@ class NewsDetailPage extends StatelessWidget {
                   if (news.fields.isFeatured)
                     Container(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 12.0, vertical: 6.0),
+                        horizontal: 12.0,
+                        vertical: 6.0,
+                      ),
                       margin: const EdgeInsets.only(bottom: 12.0),
                       decoration: BoxDecoration(
                         color: Colors.blue,
@@ -83,7 +97,9 @@ class NewsDetailPage extends StatelessWidget {
                     children: [
                       Container(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 10.0, vertical: 4.0),
+                          horizontal: 10.0,
+                          vertical: 4.0,
+                        ),
                         decoration: BoxDecoration(
                           color: Colors.indigo.shade100,
                           borderRadius: BorderRadius.circular(12.0),
@@ -100,10 +116,7 @@ class NewsDetailPage extends StatelessWidget {
                       const SizedBox(width: 12),
                       Text(
                         _formatDate(news.fields.createdAt),
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: Colors.grey[600],
-                        ),
+                        style: TextStyle(fontSize: 12, color: Colors.grey[600]),
                       ),
                     ],
                   ),
@@ -116,23 +129,17 @@ class NewsDetailPage extends StatelessWidget {
                       const SizedBox(width: 4),
                       Text(
                         '${news.fields.newsViews} views',
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: Colors.grey[600],
-                        ),
+                        style: TextStyle(fontSize: 12, color: Colors.grey[600]),
                       ),
                     ],
                   ),
-                  
+
                   const Divider(height: 32),
 
                   // Full content
                   Text(
                     news.fields.content,
-                    style: const TextStyle(
-                      fontSize: 12.0,
-                      height: 1.6,
-                    ),
+                    style: const TextStyle(fontSize: 12.0, height: 1.6),
                     textAlign: TextAlign.justify,
                   ),
 
@@ -142,12 +149,8 @@ class NewsDetailPage extends StatelessWidget {
 
                   Padding(
                     padding: EdgeInsets.all(8),
-                    child: Expanded (
-                      child: CommentList(
-                        news: news
-                      ),
-                    ),
-                  )
+                    child: Expanded(child: CommentList(news: news)),
+                  ),
                 ],
               ),
             ),
