@@ -44,14 +44,14 @@ jobs:
         run: cd sport_zone && flutter build apk --split-per-abi
 
       - name: Decode Keystore
-        run: cd sport_zone && echo "${{ secrets.KEY_JKS }}" | base64 -d > release-keystore.jks
+        run: echo "${{ secrets.KEY_JKS }}" | base64 -d > sport_zone/release-keystore.jks
 
       - name: Sign APKs
         run: |
           for apk in sport_zone/build/app/outputs/flutter-apk/*.apk; do
             echo "Signing $apk..."
             jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 \
-              -keystore release-keystore.jks \
+              -keystore sport_zone/release-keystore.jks \
               -storepass "${{ secrets.KEY_PASSWORD }}" \
               -keypass "${{ secrets.KEY_PASSWORD }}" \
               "$apk" release
