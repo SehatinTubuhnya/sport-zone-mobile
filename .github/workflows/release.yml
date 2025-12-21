@@ -38,17 +38,17 @@ jobs:
           channel: "stable"
 
       - name: Get packages
-        run: flutter pub get
+        run: cd sport_zone && flutter pub get
 
       - name: Build APK
-        run: flutter build apk --split-per-abi
+        run: cd sport_zone && flutter build apk --split-per-abi
 
       - name: Decode Keystore
-        run: echo "${{ secrets.KEY_JKS }}" | base64 -d > release-keystore.jks
+        run: cd sport_zone && echo "${{ secrets.KEY_JKS }}" | base64 -d > release-keystore.jks
 
       - name: Sign APKs
         run: |
-          for apk in build/app/outputs/flutter-apk/*.apk; do
+          for apk in sport_zone/build/app/outputs/flutter-apk/*.apk; do
             echo "Signing $apk..."
             jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 \
               -keystore release-keystore.jks \
@@ -59,7 +59,7 @@ jobs:
 
       - name: Cleanup Keystore
         if: always()
-        run: rm -f release-keystore.jks
+        run: rm -f sport_zone/release-keystore.jks
 
       - name: Get current date
         id: date
@@ -73,7 +73,7 @@ jobs:
         uses: ncipollo/release-action@v1
         with:
           allowUpdates: false
-          artifacts: "build/app/outputs/flutter-apk/*.apk"
+          artifacts: "sport_zone/build/app/outputs/flutter-apk/*.apk"
           body: "Published at ${{ steps.date.outputs.date }}"
           name: "v${{ steps.version.outputs.version }} - ${{ steps.date.outputs.date }}"
           token: ${{ secrets.GITHUB_TOKEN }}
