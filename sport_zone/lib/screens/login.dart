@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:sport_zone/screens/register.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
-import 'package:sport_zone/screens/home.dart';
+import 'package:sport_zone/home/screens/home.dart';
 import 'package:sport_zone/providers/user_provider.dart';
 
 void main() {
@@ -122,18 +122,24 @@ class _LoginPageState extends State<LoginPage> {
                         String message = response['message'];
                         String uname = response['username'] ?? username;
                         // Try to get avatar URL from response if available
-                        String? avatar = response['avatar'] ?? response['pic'] ?? response['picture'];
+                        String? avatar =
+                            response['avatar'] ??
+                            response['pic'] ??
+                            response['picture'];
                         // Update the UserProvider state so other parts of the app can show the username/avatar
                         try {
-                          context.read<UserProvider>().setUser(username: uname, avatarUrl: avatar);
+                          context.read<UserProvider>().setUser(
+                            username: uname,
+                            avatarUrl: avatar,
+                          );
                         } catch (_) {}
                         if (context.mounted) {
-                          Navigator.pushReplacement(
+                          Navigator.pushAndRemoveUntil(
                             context,
                             MaterialPageRoute(
-                              builder: (context) =>
-                                  MainScreen()
+                              builder: (BuildContext context) => MainScreen(),
                             ),
+                            (Route<dynamic> route) => false,
                           );
                           ScaffoldMessenger.of(context)
                             ..hideCurrentSnackBar()
