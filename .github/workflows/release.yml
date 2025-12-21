@@ -22,9 +22,6 @@ jobs:
       - name: Checkout the code
         uses: actions/checkout@v4
 
-      - name: Move dir
-        run: cd sport_zone
-
       - name: Get version from pubspec.yaml
         id: version
         run: echo "::set-output name=version::$(grep "version:" pubspec.yaml | cut -c10-)"
@@ -41,10 +38,10 @@ jobs:
           channel: "stable"
 
       - name: Get packages
-        run: flutter pub get
+        run: cd sport_zone && flutter pub get
 
       - name: Build APK
-        run: flutter build apk --split-per-abi
+        run: cd sport_zone && flutter build apk --split-per-abi
 
       - name: Get current date
         id: date
@@ -58,7 +55,7 @@ jobs:
         uses: ncipollo/release-action@v1
         with:
           allowUpdates: false
-          artifacts: "build/app/outputs/flutter-apk/*.apk"
+          artifacts: "sport_zone/build/app/outputs/flutter-apk/*.apk"
           body: "Published at ${{ steps.date.outputs.date }}"
           name: "v${{ steps.version.outputs.version }} - ${{ steps.date.outputs.date }}"
           token: ${{ secrets.GITHUB_TOKEN }}
