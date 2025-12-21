@@ -3,7 +3,7 @@ Aplikasi SportZone adalah aplikasi mobile yang mirip dengan website sportzone.id
 
 [![Build Status](https://app.bitrise.io/app/1d296e39-1c38-44a2-b412-0c7a05ff0686/status.svg?token=WgyWJzqBfyC8tYdvU4ru0w&branch=main)](https://app.bitrise.io/app/1d296e39-1c38-44a2-b412-0c7a05ff0686)
 
-Bitrise APK Link: https://app.bitrise.io/app/1d296e39-1c38-44a2-b412-0c7a05ff0686/installable-artifacts/3a9210f0a8fc14c0/public-install-page/5a199ca125e717b343025f1ece6345aa
+Bitrise APK Link: https://app.bitrise.io/app/1d296e39-1c38-44a2-b412-0c7a05ff0686/installable-artifacts/b1d5118f52a9b99e/public-install-page/a0e301b0996f8e8ca58606d29e54e5e0
 
 Planning Sheet: https://docs.google.com/spreadsheets/d/11mEVC2aRkmiB2F0PeraHReVkrHrGKTueJE1h_denQDk/edit
 
